@@ -741,7 +741,7 @@
                 </div>
             </div>
 
-            <div class="mobile-stats-row">
+            <div class="mobile-stats-row" style="margin-bottom: 20px;">
                 <div class="mobile-stat-card">
                     <span class="stat-value" id="mobileHwTotalCount">0</span>
                     <span class="stat-label">Toplam</span>
@@ -754,6 +754,15 @@
                     <span class="stat-value">0</span>
                     <span class="stat-label">Biten</span>
                 </div>
+            </div>
+            
+            
+            <!-- Minimalist Search Box (No Icon, No Placeholder) -->
+            <div class="mobile-hw-search-row" style="margin-bottom: 20px; padding: 0 5px;">
+                <input type="text" id="mobileHwSearchBox" 
+                       oninput="window._homeworkSearchQuery = this.value; if(window.renderMobileHomeworkList) window.renderMobileHomeworkList();" 
+                       style="width: 100%; background: #fff; border-radius: 22px; padding: 18px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.03); outline: none; font-size: 16px; font-weight: 800; color: #1a1a1a; text-align: center;" 
+                       autocomplete="off">
             </div>
         </div>
 
@@ -978,16 +987,14 @@
 
                 <!-- Modern Mobile Homework List -->
                 <div class="mobile-only">
-                    <div class="mobile-hw-filter-tabs" style="margin-bottom: 20px; align-items: center;">
+                    <div class="mobile-hw-filter-tabs" style="margin-bottom: 35px; margin-top: 10px; align-items: center; display: flex; justify-content: center; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none;">
                         <button class="hw-type-tab active" id="tabIndividualMobile" onclick="setHomeworkType('individual')" style="padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; font-size: 0.8rem; background: #c49673; color: #fff; box-shadow: 0 4px 15px rgba(196,150,115,0.2); transition: all 0.3s ease;">Bireysel Seçili</button>
                         <button class="hw-type-tab" id="tabGroupMobile" onclick="setHomeworkType('group')" style="padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; font-size: 0.8rem; background: rgba(0,0,0,0.04); color: #666; transition: all 0.3s ease;">Grup Olarak</button>
-
-                        <div style="min-width: 1px; height: 20px; background: rgba(0,0,0,0.1); margin: 0 5px;"></div>
-
-                        <button class="hw-tab active" onclick="sortHomework('dueDate')">Süresi Yaklaşan</button>
-                        <button class="hw-tab" onclick="sortHomework('givenDate')">Yeni Eklenenler</button>
+                        <div style="min-width: 1px; height: 16px; background: rgba(0,0,0,0.1); margin: 0 4px;"></div>
+                        <button class="hw-tab active" onclick="sortHomework('dueDate')" style="font-size: 0.75rem; padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; transition: all 0.3s ease;">Süresi Yaklaşan</button>
+                        <button class="hw-tab" onclick="sortHomework('givenDate')" style="font-size: 0.75rem; padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; transition: all 0.3s ease;">Yeni Eklenenler</button>
                     </div>
-
+                    
                     <div id="mobileHomeworkList" class="mobile-modern-hw-list">
                         <!-- New premium card design will be rendered here -->
                     </div>

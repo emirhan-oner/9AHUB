@@ -190,8 +190,15 @@ window.renderMobileHomeworkList = function () {
     const now = new Date();
     now.setHours(0,0,0,0);
 
-    // Filter by type
-    const filtered = window.homeworkList.filter(hw => (hw.assignmentType || 'individual') === currentHomeworkType);
+    // Filter by type & Search query
+    const query = (window._homeworkSearchQuery || '').toLowerCase().trim();
+    const filtered = window.homeworkList.filter(hw => {
+        const matchesType = (hw.assignmentType || 'individual') === currentHomeworkType;
+        const matchesSearch = !query || 
+            (hw.subject || '').toLowerCase().includes(query) || 
+            (hw.description || '').toLowerCase().includes(query);
+        return matchesType && matchesSearch;
+    });
 
     const sorted = [...filtered].sort((a, b) => {
         const dateA = new Date(a.dueDate);
