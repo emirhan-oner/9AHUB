@@ -15,36 +15,146 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+    
+    <!-- HOMEWORK SCRIPTS MOVED TO HEAD FOR BETTER READiness -->
+    <script>
+        window.HW_ADMIN_PASSWORD = '829615';
+        window._hwActionPending = null;
 
-            to {
-                opacity: 1;
+        function requireHwPassword(action) {
+            window._hwActionPending = action;
+            const modal = document.getElementById('hwPasswordModal');
+            if (modal) {
+                const input = document.getElementById('hwPasswordInput');
+                const error = document.getElementById('hwPasswordError');
+                if(input) input.value = '';
+                if(error) error.style.display = 'none';
+                modal.style.display = 'flex';
+                setTimeout(() => { if(input) input.focus(); }, 200);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } else {
+                console.error("hwPasswordModal not found");
+                alert("Sistem hatası: Şifre ekranı bulunamadı.");
             }
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
+        function verifyHwPassword() {
+            const val = document.getElementById('hwPasswordInput').value;
+            if (val === window.HW_ADMIN_PASSWORD) {
+                document.getElementById('hwPasswordModal').style.display = 'none';
+                if (typeof window._hwActionPending === 'function') window._hwActionPending();
+                window._hwActionPending = null;
+            } else {
+                const error = document.getElementById('hwPasswordError');
+                if(error) error.style.display = 'flex';
+                const input = document.getElementById('hwPasswordInput');
+                if(input) { input.value = ''; input.focus(); }
             }
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease forwards;
+        function closeHwPasswordModal() {
+            const modal = document.getElementById('hwPasswordModal');
+            if(modal) modal.style.display = 'none';
+            window._hwActionPending = null;
         }
-    </style>
+
+        function openMobileAddHomeworkModal() {
+            requireHwPassword(() => {
+                const form = document.getElementById('mobileAddHomeworkForm');
+                if (!form) return;
+                if (window.innerWidth > 768) {
+                    form.classList.add('desktop-modal-active');
+                } else {
+                    form.classList.add('mobile-fullscreen-active');
+                    const closeBtn = document.getElementById('closeMobileAddHwBtn');
+                    if (closeBtn) closeBtn.style.display = 'flex';
+                }
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+        }
+        
+        function openDesktopAddHomeworkModal() {
+            requireHwPassword(() => {
+                const form = document.getElementById('mobileAddHomeworkForm');
+                if (form) form.classList.add('desktop-modal-active');
+            });
+        }
+
+        function closeMobileAddHomeworkModal() {
+            const form = document.getElementById('mobileAddHomeworkForm');
+            if (form) {
+                form.classList.remove('mobile-fullscreen-active');
+                form.classList.remove('desktop-modal-active');
+            }
+        }
+    </script>
 </head>
 
 <body>
+    <!-- ========== HOMEWORK PASSWORD GATE MODAL ========== -->
+    <div id="hwPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999999; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); box-sizing:border-box;">
+        <div style="background:#fff; border-radius:40px; padding:40px 30px; width:100%; max-width:380px; box-shadow:0 40px 80px rgba(0,0,0,0.15); text-align:center; border:1px solid rgba(166,144,118,0.15);">
+            <div style="width:72px;height:72px;background:rgba(196,150,115,0.1);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px auto;">
+                <i data-lucide="lock" style="width:32px;height:32px;color:#c49673;"></i>
+            </div>
+            <h3 style="font-size:24px;font-weight:950;letter-spacing:-0.5px;color:#413225;margin:0 0 8px 0;">Yönetici Girişi</h3>
+            <p style="font-size:14px;color:#a69076;font-weight:600;margin:0 0 28px 0;line-height:1.5;">Ödev işlemi için şifreyi girin</p>
+            <div style="position:relative;margin-bottom:20px;">
+                <i data-lucide="key" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:#c49673;width:20px;height:20px;"></i>
+                <input type="password" id="hwPasswordInput" placeholder="Şifre" autocomplete="off"
+                    style="width:100%;padding:18px 18px 18px 52px;border:2px solid rgba(166,144,118,0.15);border-radius:20px;font-size:16px;font-weight:800;color:#413225;background:#fdfaf5;outline:none;box-sizing:border-box;transition:all 0.3s;"
+                    onfocus="this.style.borderColor='#c49673';this.style.background='#fff';"
+                    onblur="this.style.borderColor='rgba(166,144,118,0.15)';this.style.background='#fdfaf5';">
+            </div>
+            <div id="hwPasswordError" style="display:none;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.08);color:#e74c3c;border-radius:14px;padding:10px;font-size:13px;font-weight:800;margin-bottom:16px;">
+                <i data-lucide="alert-circle" style="width:16px;height:16px;"></i> Hatalı şifre!
+            </div>
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button onclick="closeHwPasswordModal()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#f1ede6;color:#a69076;font-weight:850;font-size:14px;cursor:pointer;">Vazgeç</button>
+                <button onclick="verifyHwPassword()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== INLINE EDIT HOMEWORK MODAL ========== -->
+    <div id="inlineEditHomeworkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999998; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.65); backdrop-filter:blur(10px); box-sizing:border-box;">
+        <div style="background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:32px; padding:32px; width:100%; max-width:440px; box-shadow:0 40px 80px rgba(0,0,0,0.5); position:relative; max-height:90vh; overflow-y:auto;">
+            <button onclick="closeInlineEditModal()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:none;color:#fff;width:36px;height:36px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:18px;height:18px;"></i>
+            </button>
+            <h3 style="margin:0 0 24px 0;font-size:20px;color:#fff;font-weight:900;display:flex;align-items:center;gap:10px;">
+                <i data-lucide="edit-3" style="width:20px;height:20px;color:#c49673;"></i> Ödevi Düzenle
+            </h3>
+            <style>
+                #inlineEditHomeworkModal label { display:block; font-size:11px; color:#888; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.8px; }
+                #inlineEditHomeworkModal input, #inlineEditHomeworkModal select { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-weight:700; outline:none; box-sizing:border-box; transition:border-color 0.3s; }
+                #inlineEditHomeworkModal input:focus, #inlineEditHomeworkModal select:focus { border-color:#c49673; }
+                #inlineEditHomeworkModal .edit-field { margin-bottom:18px; }
+            </style>
+            <form onsubmit="saveInlineEditHomework(event)">
+                <input type="hidden" id="inlineEditHwId">
+                <div class="edit-field"><label>Ders / Başlık</label><input type="text" id="inlineEditHwSubject" required></div>
+                <div class="edit-field"><label>Açıklama</label><input type="text" id="inlineEditHwDescription" required></div>
+                <div style="display:flex;gap:14px;">
+                    <div class="edit-field" style="flex:1;"><label>Verildiği Tarih</label><input type="date" id="inlineEditHwGivenDate" required></div>
+                    <div class="edit-field" style="flex:1;"><label>Son Teslim</label><input type="date" id="inlineEditHwDueDate" required></div>
+                </div>
+                <div class="edit-field">
+                    <label>Ders Saati</label>
+                    <select id="inlineEditHwLesson">
+                        <option value="1">1. Ders</option><option value="2">2. Ders</option>
+                        <option value="3">3. Ders</option><option value="4">4. Ders</option>
+                        <option value="5">5. Ders</option><option value="6">6. Ders</option>
+                        <option value="7">7. Ders</option><option value="8">8. Ders</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button type="button" onclick="closeInlineEditModal()" style="flex:1;padding:16px;border-radius:16px;border:none;background:rgba(255,255,255,0.06);color:#aaa;font-weight:850;font-size:14px;cursor:pointer;">İptal</button>
+                    <button type="submit" style="flex:1;padding:16px;border-radius:16px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <header>
         <div class="header-container">
             <div class="logo" onclick="showPage('home')">SOSYAAL 9A</div>
@@ -625,8 +735,8 @@
                 </button>
                 <h1>Ödevler</h1>
                 <div class="mobile-header-actions">
-                    <button class="mobile-icon-btn homework-add-btn-black" onclick="if(window.openMobileAddHomeworkModal) window.openMobileAddHomeworkModal(); else alert('Sistem yükleniyor, lütfen bekleyin...');" style="background: #111 !important; color: #fff !important; width: 44px; height: 44px; border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                        <i data-lucide="plus" style="width: 24px; height: 24px; color: #fff !important;"></i>
+                    <button class="mobile-icon-btn homework-add-btn-black" onclick="openMobileAddHomeworkModal()" style="background: #000 !important; color: #fff !important; width: 54px; height: 54px; border-radius: 18px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); position: relative; z-index: 10000; cursor: pointer;">
+                        <i data-lucide="plus" style="width: 32px; height: 32px; color: #fff !important; pointer-events: none;"></i>
                     </button>
                 </div>
             </div>
@@ -2758,71 +2868,6 @@
         </div>
     </div>
 
-    <!-- ========== HOMEWORK PASSWORD GATE MODAL ========== -->
-    <div id="hwPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999999; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); box-sizing:border-box;">
-        <div style="background:#fff; border-radius:40px; padding:40px 30px; width:100%; max-width:380px; box-shadow:0 40px 80px rgba(0,0,0,0.15); text-align:center; border:1px solid rgba(166,144,118,0.15);">
-            <div style="width:72px;height:72px;background:rgba(196,150,115,0.1);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px auto;">
-                <i data-lucide="lock" style="width:32px;height:32px;color:#c49673;"></i>
-            </div>
-            <h3 style="font-size:24px;font-weight:950;letter-spacing:-0.5px;color:#413225;margin:0 0 8px 0;">Yönetici Girişi</h3>
-            <p style="font-size:14px;color:#a69076;font-weight:600;margin:0 0 28px 0;line-height:1.5;">Ödev işlemi için şifreyi girin</p>
-            <div style="position:relative;margin-bottom:20px;">
-                <i data-lucide="key" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:#c49673;width:20px;height:20px;"></i>
-                <input type="password" id="hwPasswordInput" placeholder="Şifre" autocomplete="off"
-                    style="width:100%;padding:18px 18px 18px 52px;border:2px solid rgba(166,144,118,0.15);border-radius:20px;font-size:16px;font-weight:800;color:#413225;background:#fdfaf5;outline:none;box-sizing:border-box;transition:all 0.3s;"
-                    onfocus="this.style.borderColor='#c49673';this.style.background='#fff';"
-                    onblur="this.style.borderColor='rgba(166,144,118,0.15)';this.style.background='#fdfaf5';">
-            </div>
-            <div id="hwPasswordError" style="display:none;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.08);color:#e74c3c;border-radius:14px;padding:10px;font-size:13px;font-weight:800;margin-bottom:16px;">
-                <i data-lucide="alert-circle" style="width:16px;height:16px;"></i> Hatalı şifre!
-            </div>
-            <div style="display:flex;gap:12px;margin-top:8px;">
-                <button onclick="closeHwPasswordModal()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#f1ede6;color:#a69076;font-weight:850;font-size:14px;cursor:pointer;">Vazgeç</button>
-                <button onclick="verifyHwPassword()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Giriş Yap</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== INLINE EDIT HOMEWORK MODAL ========== -->
-    <div id="inlineEditHomeworkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999998; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.65); backdrop-filter:blur(10px); box-sizing:border-box;">
-        <div style="background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:32px; padding:32px; width:100%; max-width:440px; box-shadow:0 40px 80px rgba(0,0,0,0.5); position:relative; max-height:90vh; overflow-y:auto;">
-            <button onclick="closeInlineEditModal()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:none;color:#fff;width:36px;height:36px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-                <i data-lucide="x" style="width:18px;height:18px;"></i>
-            </button>
-            <h3 style="margin:0 0 24px 0;font-size:20px;color:#fff;font-weight:900;display:flex;align-items:center;gap:10px;">
-                <i data-lucide="edit-3" style="width:20px;height:20px;color:#c49673;"></i> Ödevi Düzenle
-            </h3>
-            <style>
-                #inlineEditHomeworkModal label { display:block; font-size:11px; color:#888; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.8px; }
-                #inlineEditHomeworkModal input, #inlineEditHomeworkModal select { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-weight:700; outline:none; box-sizing:border-box; transition:border-color 0.3s; }
-                #inlineEditHomeworkModal input:focus, #inlineEditHomeworkModal select:focus { border-color:#c49673; }
-                #inlineEditHomeworkModal .edit-field { margin-bottom:18px; }
-            </style>
-            <form onsubmit="saveInlineEditHomework(event)">
-                <input type="hidden" id="inlineEditHwId">
-                <div class="edit-field"><label>Ders / Başlık</label><input type="text" id="inlineEditHwSubject" required></div>
-                <div class="edit-field"><label>Açıklama</label><input type="text" id="inlineEditHwDescription" required></div>
-                <div style="display:flex;gap:14px;">
-                    <div class="edit-field" style="flex:1;"><label>Verildiği Tarih</label><input type="date" id="inlineEditHwGivenDate" required></div>
-                    <div class="edit-field" style="flex:1;"><label>Son Teslim</label><input type="date" id="inlineEditHwDueDate" required></div>
-                </div>
-                <div class="edit-field">
-                    <label>Ders Saati</label>
-                    <select id="inlineEditHwLesson">
-                        <option value="1">1. Ders</option><option value="2">2. Ders</option>
-                        <option value="3">3. Ders</option><option value="4">4. Ders</option>
-                        <option value="5">5. Ders</option><option value="6">6. Ders</option>
-                        <option value="7">7. Ders</option><option value="8">8. Ders</option>
-                    </select>
-                </div>
-                <div style="display:flex;gap:12px;margin-top:12px;">
-                    <button type="button" onclick="closeInlineEditModal()" style="flex:1;padding:16px;border-radius:16px;border:none;background:rgba(255,255,255,0.06);color:#aaa;font-weight:850;font-size:14px;cursor:pointer;">İptal</button>
-                    <button type="submit" style="flex:1;padding:16px;border-radius:16px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Kaydet</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- ========== HOMEWORK MODAL & UTILITY SCRIPTS ========== -->
     <script>
         // ---- PASSWORD GATE ----
@@ -2970,26 +3015,21 @@
             }
         }
 
-        // Expose globals
-        window.requireHwPassword      = requireHwPassword;
-        window.verifyHwPassword       = verifyHwPassword;
-        window.closeHwPasswordModal   = closeHwPasswordModal;
-        window.openInlineEditModal    = openInlineEditModal;
-        window.closeInlineEditModal   = closeInlineEditModal;
-        window.saveInlineEditHomework = saveInlineEditHomework;
-        window.openDesktopAddHomeworkModal  = openDesktopAddHomeworkModal;
-        window.openMobileAddHomeworkModal   = openMobileAddHomeworkModal;
-        window.closeMobileAddHomeworkModal  = closeMobileAddHomeworkModal;
-        window.addHomeworkInline            = addHomeworkInline;
-
-        // Set default due date on load
+        // Expose remaining globals or initialize
         window.addEventListener('DOMContentLoaded', () => {
-            const d = document.getElementById('inlineHwDueDate');
-            if (d) { const t = new Date(); t.setDate(t.getDate() + 1); d.valueAsDate = t; }
+            const dInput = document.getElementById('inlineHwDueDate');
+            if (dInput) { const t = new Date(); t.setDate(t.getDate() + 1); dInput.valueAsDate = t; }
             if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // Password keydown support
+            document.addEventListener('keydown', function(e) {
+                const modal = document.getElementById('hwPasswordModal');
+                if (modal && modal.style.display === 'flex') {
+                    if (e.key === 'Enter') verifyHwPassword();
+                    if (e.key === 'Escape') closeHwPasswordModal();
+                }
+            });
         });
     </script>
-
 </body>
-
 </html>
