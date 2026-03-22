@@ -625,8 +625,8 @@
                 </button>
                 <h1>Ödevler</h1>
                 <div class="mobile-header-actions">
-                    <button class="mobile-icon-btn" onclick="openMobileAddHomeworkModal()">
-                        <i data-lucide="plus"></i>
+                    <button class="mobile-icon-btn homework-add-btn-black" onclick="if(window.openMobileAddHomeworkModal) window.openMobileAddHomeworkModal(); else alert('Sistem yükleniyor, lütfen bekleyin...');" style="background: #111 !important; color: #fff !important; width: 44px; height: 44px; border-radius: 14px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <i data-lucide="plus" style="width: 24px; height: 24px; color: #fff !important;"></i>
                     </button>
                 </div>
             </div>
@@ -2827,10 +2827,10 @@
     <script>
         // ---- PASSWORD GATE ----
         const HW_ADMIN_PASSWORD = '829615';
-        let _hwActionPending = null;
+        window._hwActionPending = null;
 
         function requireHwPassword(action) {
-            _hwActionPending = action;
+            window._hwActionPending = action;
             const modal = document.getElementById('hwPasswordModal');
             if (modal) {
                 document.getElementById('hwPasswordInput').value = '';
@@ -2845,8 +2845,8 @@
             const val = document.getElementById('hwPasswordInput').value;
             if (val === HW_ADMIN_PASSWORD) {
                 document.getElementById('hwPasswordModal').style.display = 'none';
-                if (typeof _hwActionPending === 'function') _hwActionPending();
-                _hwActionPending = null;
+                if (typeof window._hwActionPending === 'function') window._hwActionPending();
+                window._hwActionPending = null;
             } else {
                 document.getElementById('hwPasswordError').style.display = 'flex';
                 document.getElementById('hwPasswordInput').value = '';
@@ -2856,7 +2856,7 @@
 
         function closeHwPasswordModal() {
             document.getElementById('hwPasswordModal').style.display = 'none';
-            _hwActionPending = null;
+            window._hwActionPending = null;
         }
 
         document.addEventListener('keydown', function(e) {
@@ -2879,11 +2879,16 @@
             requireHwPassword(() => {
                 const form = document.getElementById('mobileAddHomeworkForm');
                 if (!form) return;
+                
                 if (window.innerWidth > 768) {
                     form.classList.add('desktop-modal-active');
                 } else {
                     form.classList.add('mobile-fullscreen-active');
+                    // Ensure close button is visible on mobile fullscreen
+                    const closeBtn = document.getElementById('closeMobileAddHwBtn');
+                    if (closeBtn) closeBtn.style.display = 'flex';
                 }
+                
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             });
         }
