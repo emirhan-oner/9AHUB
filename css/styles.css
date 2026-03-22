@@ -6,16 +6,26 @@
 
 /* .container removed */
 
+:root {
+    --bg-dark: #020202;
+    --accent-glow: radial-gradient(circle at 50% 50%, rgba(15, 15, 20, 1) 0%, rgba(2, 2, 2, 1) 100%);
+    --glass-bg: rgba(255, 255, 255, 0.02);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-blur: blur(40px);
+    --pill-active: #ffffff;
+    --pill-text-active: #000000;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #050505;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: var(--bg-dark);
     color: #fff;
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
 }
 
-/* Global Background Patterns */
+/* Global Background Patterns - Smaller, tighter dots */
 body::before {
     content: "";
     position: fixed;
@@ -23,8 +33,8 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1.5px, transparent 1px);
-    background-size: 40px 40px;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
     z-index: -1;
     pointer-events: none;
 }
@@ -37,9 +47,8 @@ body::after {
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 0% 0%, rgba(0, 102, 255, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 100% 100%, rgba(255, 68, 0, 0.1) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 1) 0%, transparent 100%);
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
+        var(--accent-glow);
     z-index: -2;
     pointer-events: none;
 }
@@ -65,6 +74,7 @@ body::after {
 
 .page {
     display: none;
+    padding-top: 30px;
 }
 
 .page.active {
@@ -72,84 +82,83 @@ body::after {
 }
 
 header {
-    background: #000000 !important;
-    padding: 15px 0;
-    /* Changed to handle padding inside container */
+    background: transparent !important;
+    padding: 30px 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 1001;
     position: sticky;
     top: 0;
-    backdrop-filter: blur(20px);
 }
 
 .header-container {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 900;
-    /* Inter Black */
     letter-spacing: 2px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    background: linear-gradient(to bottom, #fff, #888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 nav {
     display: flex;
-    gap: 30px;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px);
 }
 
 nav a {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 1.2px;
+    transition: all 0.3s ease;
     cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
     font-family: 'Inter', sans-serif;
 }
 
 nav a:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 nav a.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    position: relative;
+    background: var(--pill-active);
+    color: var(--pill-text-active);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
-nav a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #fff, transparent);
+/* Hide Redundant Headers for UI Unification */
+.desktop-only .exams-header,
+.desktop-only .schedule-header,
+.desktop-only .homework-header,
+header.exams-header.desktop-only,
+header.schedule-header.desktop-only,
+header.homework-header.desktop-only {
+    display: none !important;
 }
 
 .schedule-table-container {
@@ -161,253 +170,380 @@ nav a.active::after {
 
 .schedule-table {
     width: 100%;
-    border-collapse: collapse;
-    background: rgba(30, 30, 30, 0.6);
-    border-radius: 15px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(15, 15, 15, 0.4);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 24px;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .schedule-table th {
-    background: rgba(50, 50, 50, 0.8);
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 24px 25px;
     text-align: left;
-    font-weight: 600;
-    font-size: 16px;
-    border-bottom: 2px solid rgba(100, 100, 100, 0.5);
+    font-weight: 800;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .schedule-table td {
-    padding: 15px;
-    border-bottom: 1px solid rgba(100, 100, 100, 0.2);
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     font-size: 15px;
+    font-weight: 500;
+    color: #d1d5db;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.schedule-table tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+.schedule-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.schedule-table tbody tr {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.schedule-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 4px 0 0 #fff;
+}
+
+.schedule-table tbody tr:hover td {
+    color: #fff;
+    transform: translateX(5px);
+}
+
+#desktopScheduleControls h2 {
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    letter-spacing: 3px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
 }
 
 .hero {
-    padding: 60px 50px 40px;
+    padding: 20px 50px 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .search-container {
     max-width: 800px;
+    width: 100%;
     margin: 0 auto 50px;
     position: relative;
+    animation: slideUp 0.8s ease forwards;
 }
 
 .search-box {
     width: 100%;
-    padding: 22px 65px 22px 35px;
-    border: 3px solid #fff;
-    border-radius: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    padding: 22px 55px 22px 35px;
+    border: 3px solid #ffffff;
+    border-radius: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(40px);
     color: #fff;
-    font-size: clamp(14px, 1.8vw, 18px);
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
     outline: none;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: text;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .search-box::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .search-box:focus {
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
 }
 
 .search-icon {
     position: absolute;
-    right: 25px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
+.shortcuts-trigger {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.9;
-    transition: all 0.3s;
-    pointer-events: auto;
+    transition: all 0.3s ease;
+    z-index: 5;
 }
 
-.search-icon:hover {
-    opacity: 1;
+.shortcuts-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-50%) scale(1.05);
 }
 
-.quick-links {
+.shortcuts-trigger i {
+    width: 20px;
+    height: 20px;
+}
+
+/* Clock & Weather Row */
+.hero-stats-row {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: clamp(15px, 3vw, 40px);
-    margin-bottom: clamp(15px, 2vw, 25px);
-    flex-wrap: wrap;
-    padding: 0 20px;
+    gap: 30px;
+    margin-bottom: 35px;
+    animation: slideUp 0.8s ease forwards 0.1s;
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.quick-link {
+.clock-display {
+    text-align: right;
+}
+
+.clock-display .time {
+    font-size: clamp(60px, 7vw, 76px);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 5px;
+    letter-spacing: -2px;
+}
+
+.clock-display .date {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+}
+
+.hero-divider {
+    width: 1px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.weather-widget {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px 40px;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    backdrop-filter: blur(10px);
+}
+
+.weather-icon i {
+    width: 48px;
+    height: 48px;
+    color: #fff;
+}
+
+.weather-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: transform 0.3s;
+    align-items: flex-start;
 }
 
-.quick-link:hover {
-    transform: scale(1.1);
+.weather-info .temp {
+    font-size: 52px;
+    font-weight: 500;
+    line-height: 1;
 }
 
-.icon {
-    width: 50px;
-    height: 50px;
-    background: #333;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
+.weather-info .condition {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Day Selector */
+.day-selector-container {
+    margin-bottom: 20px;
+    animation: slideUp 0.8s ease forwards 0.2s;
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .day-selector {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: -5px;
-    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 6px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 5px;
 }
 
 .day-btn {
-    padding: 12px 30px;
+    padding: 10px 24px;
     background: transparent;
-    border: 2px solid #444;
-    border-radius: 30px;
-    color: #888;
+    border: none;
+    border-radius: 50px;
+    color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
-    font-size: 16px;
+    font-size: 13px;
+    font-weight: 700;
     transition: all 0.3s;
 }
 
 .day-btn.active {
     background: #fff;
-    border-color: #fff;
     color: #000;
-    font-weight: 800;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
-}
-
-.current-time-display {
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 20px;
-    color: #aaa;
-}
-
-.current-time-display .time {
-    color: #fff;
-    font-weight: bold;
-    font-size: 24px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .schedule-viewer {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 90px 20px 0 20px;
+    padding: 20px 20px 0 20px;
     position: relative;
-    height: 450px;
-    perspective: 1000px;
+    height: 420px;
+    perspective: 1500px;
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    overflow: hidden;
-    /* Prevent horizontal scroll from cards */
+    align-items: center;
+    overflow: visible;
+    /* Allow glow to be visible */
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.carousel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 .lesson-card {
     position: absolute;
     left: 50%;
-    width: 350px;
-    padding: 35px;
-    border-radius: 25px;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    top: 50%;
+    width: 320px;
+    height: 240px;
+    padding: 30px;
+    border-radius: 40px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(100, 100, 100, 0.3);
-    transform-origin: center;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%, -50%) scale(0.6);
+}
+
+.lesson-card .time-slot {
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.lesson-card .lesson-name {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.lesson-card .lesson-location {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
 }
 
 .lesson-card.center {
-    transform: translateX(-50%) scale(1.25);
+    width: 500px;
+    height: 340px;
     z-index: 10;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(255, 255, 255, 0.05);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 40px rgba(255, 255, 255, 0.3),
-        inset 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-.lesson-card.right-1 {
-    transform: translateX(calc(-50% + 350px)) scale(0.85);
-    z-index: 8;
-    opacity: 0.6;
+.lesson-card.center .lesson-name {
+    font-size: 48px;
+    font-weight: 900;
 }
 
-.lesson-card.right-2 {
-    transform: translateX(calc(-50% + 600px)) scale(0.65);
-    z-index: 6;
-    opacity: 0.35;
-}
-
-.lesson-card.right-3 {
-    transform: translateX(calc(-50% + 800px)) scale(0.5);
-    z-index: 4;
-    opacity: 0.15;
+.lesson-card.center .time-slot {
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .lesson-card.left-1 {
-    transform: translateX(calc(-50% - 350px)) scale(0.85);
-    z-index: 8;
-    opacity: 0.6;
+    transform: translate(calc(-50% - 380px), -50%) scale(0.7);
+    z-index: 5;
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.lesson-card.right-1 {
+    transform: translate(calc(-50% + 380px), -50%) scale(0.7);
+    z-index: 5;
+    opacity: 0.5;
+    filter: blur(1px);
 }
 
 .lesson-card.left-2 {
-    transform: translateX(calc(-50% - 600px)) scale(0.65);
-    z-index: 6;
-    opacity: 0.35;
-}
-
-.lesson-card.left-3 {
-    transform: translateX(calc(-50% - 800px)) scale(0.5);
+    transform: translate(calc(-50% - 720px), -50%) scale(0.5);
     z-index: 4;
-    opacity: 0.15;
+    opacity: 0.2;
+    filter: blur(2px);
 }
 
-.time-slot {
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #fff;
+.lesson-card.right-2 {
+    transform: translate(calc(-50% + 720px), -50%) scale(0.5);
+    z-index: 4;
+    opacity: 0.2;
+    filter: blur(2px);
 }
 
-.lesson-name {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-
-.lesson-location {
-    font-size: 16px;
-    color: #bbb;
+.lesson-card.left-3,
+.lesson-card.right-3 {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .lesson-status {
@@ -429,22 +565,32 @@ nav a.active::after {
 }
 
 .tomorrow-btn {
-    padding: 12px 30px;
-    background: transparent;
-    border: 2px solid #444;
-    border-radius: 30px;
-    color: #888;
+    padding: 16px 45px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    color: #fff;
     cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s;
-    margin-top: 35px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 40px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .tomorrow-btn:hover {
     background: #fff;
-    border-color: #fff;
     color: #000;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
+}
+
+.tomorrow-btn:active {
+    transform: translateY(1px);
 }
 
 @keyframes slideUp {
@@ -457,6 +603,15 @@ nav a.active::after {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+}
+
+.shortcuts-active .hero-stats-row,
+.shortcuts-active .day-selector-container,
+.shortcuts-active .schedule-viewer {
+    transform: translateY(220px) scale(0.9);
+    filter: blur(25px);
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Homework Page Adjustments */
@@ -1534,4 +1689,357 @@ body .modal-content.premium .btn-secondary {
     .homework-layout>div:last-child {
         flex: 1 !important;
     }
+}
+
+/* --- ÖBS (Teacher Info) Page Styles --- */
+#obsPage:not(.active) {
+    display: none !important;
+}
+
+#obsPage {
+    padding-top: 100px;
+    min-height: 100vh;
+    background: #0a0a0f;
+}
+
+.obs-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.teacher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.teacher-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.teacher-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.teacher-profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+}
+
+.teacher-card:hover .teacher-profile-img {
+    border-color: #fff;
+    transform: scale(1.05);
+}
+
+.teacher-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.teacher-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.teacher-subject {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.teacher-card-action {
+    margin-top: 25px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+}
+
+.teacher-card:hover .teacher-card-action {
+    color: #fff;
+    transform: translateX(5px);
+}
+
+/* Teacher Modal Styles */
+.teacher-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+}
+
+.teacher-modal .modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(135deg, #1a1a20 0%, #0a0a0f 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    padding: 50px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.modal-close-btn:hover {
+    background: #ff4d4d;
+    transform: rotate(90deg);
+}
+
+.teacher-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.detail-profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 35px;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-main-info h2 {
+    font-size: 32px;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.detail-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.teacher-detail-body h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.teacher-detail-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 30px;
+}
+
+.detail-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-item i {
+    color: #fff;
+    width: 24px;
+    height: 24px;
+}
+
+.stat-item span {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.teacher-detail-footer .contact-btn {
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    background: #fff;
+    color: #000;
+    font-size: 16px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s;
+}
+
+.contact-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+/* Schedule & Detail Section Styles */
+.detail-section {
+    margin-bottom: 35px;
+}
+
+.detail-section h3 {
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+}
+
+.detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.detail-tag-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 18px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-tag-item i {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+}
+
+.detail-tag-item.highlight {
+    background: rgba(255, 166, 77, 0.1);
+    color: #ffa64d;
+    border-color: rgba(255, 166, 77, 0.2);
+}
+
+.detail-tag-item.free {
+    background: rgba(77, 255, 173, 0.1);
+    color: #4da676;
+    border-color: rgba(77, 255, 173, 0.2);
+}
+
+.teacher-schedule-table {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.schedule-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.schedule-row:last-child {
+    border-bottom: none;
+}
+
+.day-label {
+    width: 100px;
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    padding-top: 4px;
+}
+
+.lessons-list {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lesson-tag {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.schedule-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-style: italic;
 }

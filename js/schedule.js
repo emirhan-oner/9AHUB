@@ -54,7 +54,7 @@ function getCurrentLessonIndex(day) {
     return scheduleData[day].length - 1;
 }
 
-function getLessonStatus(lesson) {
+function getLessonStatus(lesson, nextLesson = null) {
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     const timeRange = lesson.time.split(' - ');
@@ -63,10 +63,10 @@ function getLessonStatus(lesson) {
 
     if (currentMinutes >= startTime && currentMinutes < endTime) {
         const remaining = endTime - currentMinutes;
-        return { status: 'active', text: `Devam ediyor (${remaining} dk kaldı)` };
+        return { status: 'active', text: `BİTMESİNE ${remaining} DK` };
     } else if (currentMinutes < startTime) {
         const until = startTime - currentMinutes;
-        return { status: 'upcoming', text: `${until} dakika sonra` };
+        return { status: 'upcoming', text: `BAŞLAMASINA ${until} DK` };
     }
 
     return { status: '', text: '' };
@@ -77,12 +77,17 @@ function updateCarousel() {
     if (!carousel) return;
     carousel.innerHTML = '';
 
-    if (!scheduleData[currentDay] || scheduleData[currentDay].length === 0) {
-        carousel.innerHTML = '<p>Bu gün için ders bulunmamaktadır.</p>';
-        return;
+    let lessons = scheduleData[currentDay];
+
+    // Handle Weekend or Empty Day (Match Screenshot: 'Hafta Sonu' style)
+    if (!lessons || lessons.length === 0) {
+        lessons = [{
+            time: 'İyi Tatiller',
+            lesson: 'Hafta Sonu',
+            location: '_'
+        }];
     }
 
-    const lessons = scheduleData[currentDay];
     const totalLessons = lessons.length;
 
     for (let i = -3; i <= 3; i++) {
@@ -103,18 +108,20 @@ function updateCarousel() {
 
         let statusHtml = '';
         if (i === 0 && lessonStatus.text) {
-            statusHtml = `<div class="lesson-status ${lessonStatus.status}">${lessonStatus.text}</div>`;
+            const isBreak = lessonStatus.status === 'upcoming';
+            statusHtml = `<div class="lesson-status ${lessonStatus.status}" style="margin-top: 25px; background: ${isBreak ? 'rgba(255,165,0,0.15)' : 'rgba(255,255,255,0.1)'}; padding: 8px 20px; border-radius: 20px; font-size: 11px; font-weight: 800; color: #fff; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1);">${lessonStatus.text}</div>`;
         }
 
         card.innerHTML = `
             <div class="time-slot">${lesson.time}</div>
-            <div class="lesson-name">${lesson.lesson}</div>
+            <div class="lesson-name">${shortenLessonName(lesson.lesson)}</div>
             <div class="lesson-location">${lesson.location}</div>
             ${statusHtml}
         `;
 
         carousel.appendChild(card);
     }
+    if (window.lucide) lucide.createIcons();
 }
 
 function renderMobileTimeline() {
@@ -385,38 +392,81 @@ function updateMobileHeroCard() {
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     const currentSeconds = now.getSeconds();
 
+    const todayStr = String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    let isHoliday = false;
+    let holidayName = "";
+
+    if (typeof CALENDAR_EVENTS_2026 !== 'undefined' && CALENDAR_EVENTS_2026[todayStr]) {
+        const evData = CALENDAR_EVENTS_2026[todayStr];
+        const items = Array.isArray(evData) ? evData : [evData];
+        const holidayEv = items.find(e => e.type === 'school-holiday' || e.type === 'holiday');
+        
+        if (holidayEv) {
+            isHoliday = true;
+            holidayName = holidayEv.title;
+        }
+    }
+
+    if (isHoliday) {
+        if (heroSubject) heroSubject.textContent = holidayName.toUpperCase();
+        if (nowBadge) nowBadge.textContent = "TATİL";
+        if (heroTime) heroTime.textContent = "İyi Dinlenmeler";
+        if (heroEndTime) heroEndTime.textContent = "";
+        if (heroLocationContainer) heroLocationContainer.style.display = 'none';
+        if (hwStatus) hwStatus.style.display = 'none';
+        if (progressFill) progressFill.style.width = "0%";
+        return;
+    }
+
     let heroLesson = null;
     let isActive = false;
     let dayOffset = 0;
     let targetStartM = 0;
 
-    // Search for the next available lesson (unending loop until lesson found)
+    // Search for the next available lesson, skipping future holidays
     while (dayOffset < 8) {
-        const checkDayIndex = (now.getDay() + dayOffset) % 7;
-        const checkDayName = TurkishDays[checkDayIndex];
-        const dayLessons = scheduleData[checkDayName];
+        const checkDate = new Date(now);
+        checkDate.setDate(checkDate.getDate() + dayOffset);
+        
+        let checkDayIsHoliday = false;
+        if (dayOffset !== 0) {
+            const checkDateStr = String(checkDate.getMonth() + 1).padStart(2, '0') + '-' + String(checkDate.getDate()).padStart(2, '0');
+            if (typeof CALENDAR_EVENTS_2026 !== 'undefined' && CALENDAR_EVENTS_2026[checkDateStr]) {
+                const evData = CALENDAR_EVENTS_2026[checkDateStr];
+                const items = Array.isArray(evData) ? evData : [evData];
+                if (items.some(e => e.type === 'school-holiday' || e.type === 'holiday')) {
+                    checkDayIsHoliday = true;
+                }
+            }
+        }
+        
+        if (!checkDayIsHoliday) {
+            const checkDayIndex = checkDate.getDay();
+            const checkDayName = TurkishDays[checkDayIndex];
+            const dayLessons = scheduleData[checkDayName];
 
-        if (dayLessons && dayLessons.length > 0) {
-            for (let i = 0; i < dayLessons.length; i++) {
-                const l = dayLessons[i];
-                const [start, end] = l.time.split(' - ');
-                const startM = parseTimeToMinutes(start);
-                const endM = parseTimeToMinutes(end);
+            if (dayLessons && dayLessons.length > 0) {
+                for (let i = 0; i < dayLessons.length; i++) {
+                    const l = dayLessons[i];
+                    const [start, end] = l.time.split(' - ');
+                    const startM = parseTimeToMinutes(start);
+                    const endM = parseTimeToMinutes(end);
 
-                if (dayOffset === 0) {
-                    if (currentMinutes >= startM && currentMinutes < endM) {
+                    if (dayOffset === 0) {
+                        if (currentMinutes >= startM && currentMinutes < endM) {
+                            heroLesson = l;
+                            isActive = true;
+                            break;
+                        } else if (currentMinutes < startM) {
+                            heroLesson = l;
+                            targetStartM = startM;
+                            break;
+                        }
+                    } else {
                         heroLesson = l;
-                        isActive = true;
-                        break;
-                    } else if (currentMinutes < startM) {
-                        heroLesson = l;
-                        targetStartM = startM;
+                        targetStartM = startM + (dayOffset * 1440);
                         break;
                     }
-                } else {
-                    heroLesson = l;
-                    targetStartM = startM + (dayOffset * 1440);
-                    break;
                 }
             }
         }
@@ -425,7 +475,13 @@ function updateMobileHeroCard() {
     }
 
     if (!heroLesson) {
-        if (heroSubject) heroSubject.textContent = "DERS PROGRAMI BOŞ";
+        if (heroSubject) heroSubject.textContent = "DERS YOK";
+        if (heroTime) heroTime.textContent = "İyi Günler";
+        if (heroEndTime) heroEndTime.textContent = "";
+        if (nowBadge) nowBadge.textContent = "BOŞ";
+        if (heroLocationContainer) heroLocationContainer.style.display = 'none';
+        if (hwStatus) hwStatus.style.display = 'none';
+        if (progressFill) progressFill.style.width = "0%";
         return;
     }
 
@@ -434,12 +490,28 @@ function updateMobileHeroCard() {
     const endM = parseTimeToMinutes(end);
 
     if (isActive) {
-        if (heroSubject) heroSubject.textContent = shortenLessonName(heroLesson.lesson);
+        if (heroSubject) heroSubject.textContent = shortenLessonName(heroLesson.lesson).toUpperCase();
         if (nowBadge) nowBadge.textContent = "ŞU AN";
-        if (heroTime) heroTime.textContent = start;
-        if (heroEndTime) heroEndTime.textContent = `${end} biter`;
-        if (heroLocationContainer) heroLocationContainer.style.display = 'none';
-        if (hwStatus) hwStatus.style.display = 'flex';
+
+        const remainingEndM = endM - currentMinutes;
+        const h = Math.floor(remainingEndM / 60);
+        const m = remainingEndM % 60;
+        
+        let countdownStr = "";
+        if (h > 0) {
+            countdownStr = `${h} sa ${m} dk`;
+        } else {
+            countdownStr = `${m} dk`;
+        }
+
+        if (heroTime) heroTime.textContent = countdownStr;
+        if (heroEndTime) heroEndTime.textContent = "bitmesine";
+        
+        if (heroLocationContainer) {
+            heroLocationContainer.style.display = 'flex';
+            if (heroLocation) heroLocation.textContent = heroLesson.location || "";
+        }
+        if (hwStatus) hwStatus.style.display = 'block';
 
         const total = endM - startM;
         const elapsed = currentMinutes - startM;
@@ -447,24 +519,33 @@ function updateMobileHeroCard() {
         if (progressFill) progressFill.style.width = `${percent}%`;
     } else {
         if (heroSubject) heroSubject.textContent = shortenLessonName(heroLesson.lesson).toUpperCase();
-        if (nowBadge) nowBadge.textContent = "SIRADAKİ";
+        if (nowBadge) nowBadge.textContent = dayOffset === 0 ? "SIRADAKİ" : "YAKLAŞAN";
 
-        // Accurate countdown including multi-day offsets
         const totalDiffM = targetStartM - currentMinutes;
         const h = Math.floor(totalDiffM / 60);
         const m = totalDiffM % 60;
 
         let countdownStr = "";
         if (h > 0) {
-            countdownStr = `${h} sa ${m} dk`;
+            if (h >= 24) {
+               const d = Math.floor(h / 24);
+               const remH = h % 24;
+               countdownStr = `${d} gün ${remH} sa`;
+            } else {
+               countdownStr = `${h} sa ${m} dk`;
+            }
         } else {
-            countdownStr = `${m} dk kaldı`;
+            countdownStr = `${m} dk`;
         }
 
         if (heroTime) heroTime.textContent = countdownStr;
         if (heroEndTime) heroEndTime.textContent = "başlamasına";
-        if (heroLocationContainer) heroLocationContainer.style.display = 'none';
-        if (hwStatus) hwStatus.style.display = 'none';
+        
+        if (heroLocationContainer) {
+            heroLocationContainer.style.display = 'flex';
+            if (heroLocation) heroLocation.textContent = heroLesson.location || "";
+        }
+        if (hwStatus) hwStatus.style.display = 'block';
         if (progressFill) progressFill.style.width = "0%";
     }
 
@@ -476,6 +557,8 @@ function updateMobileHeroCard() {
         hwStatus.innerHTML = hasHw ? '🔥 ÖDEV VAR' : '✨ Ödev Yok';
         hwStatus.style.background = hasHw ? 'rgba(231, 76, 60, 0.1)' : 'rgba(46, 204, 113, 0.1)';
         hwStatus.style.color = hasHw ? '#e74c3c' : '#2ecc71';
+        hwStatus.style.padding = '6px 12px';
+        hwStatus.style.borderRadius = '12px';
     }
 }
 

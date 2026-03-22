@@ -278,14 +278,77 @@ function formatExamDate(dateStr) {
     return date.toLocaleDateString('tr-TR', options).toUpperCase();
 }
 
-function openExamModal(id) {
+window.openExamModal = function(id) {
     try {
         const exam = window.exams.find(e => e.id == id);
         const targetExam = exam || window.exams.find(e => String(e.id) === String(id));
+        if (!targetExam) return;
+
+        // Mobile vs Desktop check
+        if (window.innerWidth <= 768) {
+            const detailPage = document.getElementById('mobileExamDetailPage');
+            const examsPage = document.getElementById('examsPage');
+            
+            if (detailPage && examsPage) {
+                // Populate Mobile Detail
+                document.getElementById('mobileDetailSubject').innerText = targetExam.subject || 'DERS ADI YOK';
+                
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                const isPast = new Date(targetExam.date) < today;
+                const statusEl = document.getElementById('mobileDetailStatus');
+                if (statusEl) {
+                    statusEl.innerText = isPast ? 'TAMAMLANDI' : 'SIRADA';
+                    statusEl.classList.toggle('completed', isPast);
+                }
+
+                document.getElementById('mobileDetailDate').innerText = formatExamDate(targetExam.date);
+                document.getElementById('mobileDetailLesson').innerText = targetExam.lessonNumber ? (String(targetExam.lessonNumber).includes('.') ? targetExam.lessonNumber : `${targetExam.lessonNumber}. Ders`) : '-';
+                document.getElementById('mobileDetailPages').innerText = targetExam.pages || '-';
+                document.getElementById('mobileDetailScenario').innerText = targetExam.scenarioNo || '-';
+                
+                const topics = targetExam.topics || 'Detaylar henüz eklenmedi.';
+                document.getElementById('mobileDetailTopics').innerText = Array.isArray(topics) ? topics.join(', ') : topics;
+
+                const noteSection = document.getElementById('mobileTeacherNoteSection');
+                const noteEl = document.getElementById('mobileDetailTeacherNote');
+                if (targetExam.teacherNotes && targetExam.teacherNotes.trim() !== "") {
+                    noteSection.classList.remove('hidden');
+                    noteEl.innerText = targetExam.teacherNotes;
+                } else {
+                    noteSection.classList.add('hidden');
+                }
+
+                const mebLink = document.getElementById('mobileMebLink');
+                const scLink = document.getElementById('mobileScenarioLink');
+                if (targetExam.mebSampleLink && targetExam.mebSampleLink !== "#") {
+                    mebLink.href = targetExam.mebSampleLink;
+                    mebLink.classList.remove('hidden');
+                } else {
+                    mebLink.classList.add('hidden');
+                }
+                if (targetExam.scenarioLink && targetExam.scenarioLink !== "#") {
+                    scLink.href = targetExam.scenarioLink;
+                    scLink.classList.remove('hidden');
+                } else {
+                    scLink.classList.add('hidden');
+                }
+
+                // Switch pages
+                examsPage.classList.remove('active');
+                detailPage.classList.add('active');
+                window.scrollTo(0, 0);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+        }
+
+        // Desktop Popup (Old Logic)
         const modal = document.getElementById('examDetailsModal');
         if (!modal) return;
 
-        document.getElementById('modalExamSubject').innerText = targetExam.subject || 'DERS ADI YOK';
+        const subjectEl = document.getElementById('modalExamSubject');
+        if (subjectEl) subjectEl.innerText = targetExam.subject || 'DERS ADI YOK';
+        
         const today = new Date(); today.setHours(0, 0, 0, 0);
         const isPast = new Date(targetExam.date) < today;
         const dot = document.getElementById('modalExamDotStatus');
@@ -294,12 +357,21 @@ function openExamModal(id) {
         if (dot) dot.className = `w-1.5 h-1.5 rounded-full ${isPast ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'}`;
         if (statusText) statusText.innerText = isPast ? 'TAMAMLANDI' : 'SIRADA';
 
-        document.getElementById('modalExamDate').innerText = formatExamDate(targetExam.date);
-        document.getElementById('modalExamLesson').innerText = targetExam.lessonNumber ? `${targetExam.lessonNumber}. DERS SAATİ` : '-';
+        const dateEl = document.getElementById('modalExamDate');
+        if (dateEl) dateEl.innerText = formatExamDate(targetExam.date);
+        
+        const lessonEl = document.getElementById('modalExamLesson');
+        if (lessonEl) lessonEl.innerText = targetExam.lessonNumber ? `${targetExam.lessonNumber}. DERS SAATİ` : '-';
+        
         const topics = targetExam.topics || 'Detaylar henüz eklenmedi.';
-        document.getElementById('modalExamTopics').innerText = Array.isArray(topics) ? topics.join(', ') : topics;
-        document.getElementById('modalExamPages').innerText = targetExam.pages || 'Belirtilmedi';
-        document.getElementById('modalExamScenario').innerText = targetExam.scenarioNo || 'Senaryo Yok';
+        const topicsEl = document.getElementById('modalExamTopics');
+        if (topicsEl) topicsEl.innerText = Array.isArray(topics) ? topics.join(', ') : topics;
+        
+        const pagesEl = document.getElementById('modalExamPages');
+        if (pagesEl) pagesEl.innerText = targetExam.pages || 'Belirtilmedi';
+        
+        const scenarioEl = document.getElementById('modalExamScenario');
+        if (scenarioEl) scenarioEl.innerText = targetExam.scenarioNo || 'Senaryo Yok';
 
         const mebLinkBtn = document.getElementById('modalMebLink');
         const scenarioLinkBtn = document.getElementById('modalScenarioLink');
@@ -308,19 +380,33 @@ function openExamModal(id) {
 
         const noteContainer = document.getElementById('modalTeacherNoteContainer');
         const noteEl = document.getElementById('modalTeacherNote');
-        if (targetExam.teacherNotes) { noteContainer.classList.remove('hidden'); noteEl.innerText = targetExam.teacherNotes; } else { noteContainer.classList.add('hidden'); }
+        if (targetExam.teacherNotes) { 
+            if (noteContainer) noteContainer.classList.remove('hidden'); 
+            if (noteEl) noteEl.innerText = targetExam.teacherNotes; 
+        } else { 
+            if (noteContainer) noteContainer.classList.add('hidden'); 
+        }
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         if (typeof lucide !== 'undefined') lucide.createIcons();
     } catch (err) { console.error(err); }
-}
+};
 
-function closeExamModal() {
+window.closeExamModal = function() {
     const modal = document.getElementById('examDetailsModal');
-    modal.classList.remove('active');
+    if (modal) modal.classList.remove('active');
     document.body.style.overflow = '';
-}
+};
+
+window.closeMobileExamDetail = function() {
+    const detailPage = document.getElementById('mobileExamDetailPage');
+    const examsPage = document.getElementById('examsPage');
+    if (detailPage && examsPage) {
+        detailPage.classList.remove('active');
+        examsPage.classList.add('active');
+    }
+};
 
 // Exam Notes Modal Logic
 async function openExamNotesModal(examId, subject) {
@@ -761,7 +847,9 @@ function openAdminModal(editId = null) {
         document.getElementById('quickExamDate').value = today;
     }
 
-    modal.classList.add('active');
+    if (modal) {
+        modal.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 999999 !important; pointer-events: auto !important; position: fixed !important; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center;';
+    }
     document.body.style.overflow = 'hidden';
 }
 

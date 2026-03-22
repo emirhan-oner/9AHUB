@@ -22,6 +22,12 @@
             min-height: 100vh;
         }
 
+        /* When embedded in iframe, make background transparent */
+        body.in-iframe {
+            background-color: transparent !important;
+            background: transparent !important;
+        }
+
         /* Unified Sharp Dot Pattern */
         body::before {
             content: "";
@@ -154,6 +160,58 @@
   }
 }
 </script>
+    <script>
+        // Adjust styles when embedded in an iframe
+        if (window.self !== window.top) {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                body, body.in-iframe {
+                    background: transparent !important;
+                    background-color: transparent !important;
+                }
+                body::before, body::after { display: none !important; }
+
+                header {
+                    background: rgba(0,0,0,0.3) !important;
+                    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+                    padding: 12px 20px !important;
+                }
+                header > div:first-child > div:first-child { display: none !important; }
+                header > div:first-child {
+                    max-width: 100% !important;
+                    flex-direction: row !important;
+                    justify-content: flex-end !important;
+                    gap: 12px !important;
+                }
+                header > div:first-child > div:last-child {
+                    width: 100% !important;
+                    flex-direction: row !important;
+                }
+                header > div:first-child > div:last-child > div:first-child {
+                    flex: 1 !important;
+                    width: auto !important;
+                }
+
+                nav#filterNav {
+                    margin-top: 6px !important;
+                }
+
+                main {
+                    padding: 14px 20px !important;
+                }
+                .card-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+                    gap: 16px !important;
+                }
+                .card-grid > div { height: 190px !important; }
+            `;
+            document.head.appendChild(style);
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.classList.add('in-iframe');
+            });
+            if (document.body) document.body.classList.add('in-iframe');
+        }
+    </script>
 </head>
 
 <body class="custom-scrollbar">
@@ -677,7 +735,8 @@
 
         function updateStorageStats() {
             const total = items.reduce((acc, i) => acc + (i.size || 0), 0);
-            document.getElementById('storageStats').innerText = `ALAN: ${formatSize(total)}`;
+            const el = document.getElementById('storageStats');
+            if (el) el.innerText = `ALAN: ${formatSize(total)}`;
         }
 
         async function handleOpenItem(item) {

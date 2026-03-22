@@ -4,6 +4,7 @@ let currentYear = now.getFullYear();
 let currentSortBy = 'dueDate';
 let currentView = 'month'; // 'month' or 'week'
 let currentHomeworkFormMode = 'detailed';
+let currentHomeworkType = 'individual';
 
 // Global homework list - populated by HomeworkSyncV2
 window.homeworkList = [];
@@ -145,6 +146,38 @@ function renderHomeworkCards() {
     }
 }
 
+window.setHomeworkType = function(type) {
+    currentHomeworkType = type;
+    
+    // Update tabs
+    const tabInd = document.getElementById('tabIndividualMobile');
+    const tabGrp = document.getElementById('tabGroupMobile');
+    
+    if (tabInd && tabGrp) {
+        if (type === 'individual') {
+            tabInd.style.background = '#c49673';
+            tabInd.style.color = '#fff';
+            tabInd.style.boxShadow = '0 4px 15px rgba(196,150,115,0.2)';
+            
+            tabGrp.style.background = 'rgba(0,0,0,0.04)';
+            tabGrp.style.color = '#666';
+            tabGrp.style.boxShadow = 'none';
+        } else {
+            tabGrp.style.background = '#c49673';
+            tabGrp.style.color = '#fff';
+            tabGrp.style.boxShadow = '0 4px 15px rgba(196,150,115,0.2)';
+            
+            tabInd.style.background = 'rgba(0,0,0,0.04)';
+            tabInd.style.color = '#666';
+            tabInd.style.boxShadow = 'none';
+        }
+    }
+    
+    if (typeof renderMobileHomeworkList === 'function') {
+        renderMobileHomeworkList();
+    }
+};
+
 window.renderMobileHomeworkList = function () {
     const container = document.getElementById('mobileHomeworkList');
     const totalCountEl = document.getElementById('mobileHwTotalCount');
@@ -154,9 +187,29 @@ window.renderMobileHomeworkList = function () {
 
     container.innerHTML = '';
 
-    const sorted = [...window.homeworkList].sort((a, b) => {
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    // Filter by type
+    const filtered = window.homeworkList.filter(hw => (hw.assignmentType || 'individual') === currentHomeworkType);
+
+    const sorted = [...filtered].sort((a, b) => {
+        const dateA = new Date(a.dueDate);
+        const dateB = new Date(b.dueDate);
+        dateA.setHours(0,0,0,0);
+        dateB.setHours(0,0,0,0);
+        
+        const diffDaysA = Math.ceil((dateA - now) / (1000 * 60 * 60 * 24));
+        const diffDaysB = Math.ceil((dateB - now) / (1000 * 60 * 60 * 24));
+        
+        const isUrgentA = diffDaysA <= 1; // 1 DAY THRESHOLD
+        const isUrgentB = diffDaysB <= 1;
+
+        if (isUrgentA && !isUrgentB) return -1;
+        if (!isUrgentA && isUrgentB) return 1;
+
         if (currentSortBy === 'dueDate') {
-            return new Date(a.dueDate) - new Date(b.dueDate);
+            return dateA - dateB;
         } else {
             return new Date(b.givenDate) - new Date(a.givenDate);
         }
@@ -165,7 +218,6 @@ window.renderMobileHomeworkList = function () {
     // Update Stats
     const total = sorted.length;
     let urgent = 0;
-    const now = new Date();
 
     // Update Tab Active State
     document.querySelectorAll('.hw-tab').forEach(tab => {
@@ -181,33 +233,45 @@ window.renderMobileHomeworkList = function () {
         card.onclick = () => openHomeworkDetail(hw);
 
         const dueDate = new Date(hw.dueDate);
+        dueDate.setHours(0,0,0,0);
         const diffTime = dueDate - now;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const isUrgent = diffDays <= 2;
+        const isUrgent = diffDays <= 1;
         if (isUrgent) urgent++;
+
+        const daysLeftText = diffDays < 0 ? 'SÜRE BİTTİ' : diffDays === 0 ? 'BUGÜN' : diffDays === 1 ? 'YARIN' : `${diffDays} GÜN KALDI`;
 
         const statusLabel = isUrgent ? 'ACİL' : 'ZAMAN VAR';
         const statusClass = isUrgent ? 'urgent' : 'neutral';
 
+        // USER REQUEST: Only specific labels red, not the whole card
+        const cardStyle = ''; // Neutral background
+
         card.innerHTML = `
             <div class="hw-card-header-v2">
-                <span class="hw-card-subject-v2">${hw.subject.toUpperCase()}</span>
+                <span class="hw-card-subject-v2" style="${isUrgent ? 'background: rgba(239,68,68,0.1); color: #ef4444;' : ''}">${hw.subject.toUpperCase()}</span>
                 <span class="hw-card-status-v2 ${statusClass}">${statusLabel}</span>
             </div>
             <div class="hw-card-content-v2">
                 <h3>${hw.description}</h3>
             </div>
-            <div class="hw-card-footer-v2">
-                <div class="footer-item">
-                    <i data-lucide="calendar"></i>
-                    <span>${hw.dueDate}</span>
+            <div class="hw-card-footer-v2" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 15px;">
+                    <div class="footer-item">
+                        <i data-lucide="calendar"></i>
+                        <span>${hw.dueDate}</span>
+                    </div>
+                    <div class="footer-item">
+                        <i data-lucide="clock"></i>
+                        <span>${hw.lesson}. Ders</span>
+                    </div>
                 </div>
-                <div class="footer-item">
-                    <i data-lucide="clock"></i>
-                    <span>${hw.lesson}. Ders</span>
+                <div style="font-size: 10px; font-weight: 950; color: ${isUrgent ? '#ef4444' : '#a69076'}; text-transform: uppercase;">
+                    ${daysLeftText}
                 </div>
             </div>
         `;
+        
         container.appendChild(card);
     });
 
@@ -652,9 +716,11 @@ function closeTodayHomeworkModal() {
 function openHomeworkModal() {
     const modal = document.getElementById('homeworkModal');
     if (modal) {
-        modal.style.display = 'flex';
+        modal.classList.add('show');
         const givenDateInput = document.getElementById('hwGivenDate');
         if (givenDateInput) givenDateInput.valueAsDate = new Date();
+    } else {
+        console.error("Homework modal element not found in DOM");
     }
 }
 
@@ -682,10 +748,10 @@ function switchHomeworkFormMode(mode) {
 
 function closeHomeworkModal() {
     const modal = document.getElementById('homeworkModal');
-    if (modal) modal.style.display = 'none';
+    if (modal) modal.classList.remove('show');
     const form = document.getElementById('homeworkForm');
     if (form) form.reset();
-    switchHomeworkFormMode('detailed'); // Reset to detailed
+    if(typeof switchNewHwMode === 'function') switchNewHwMode('detailed'); // Reset to detailed
 }
 
 function addHomework(e) {
@@ -699,6 +765,7 @@ function addHomework(e) {
         const given = document.getElementById('hwGivenDate').value;
         const due = document.getElementById('hwDueDate').value;
         const lesson = document.getElementById('hwLesson').value;
+        const assignType = document.getElementById('hwAssignmentType').value;
 
         if (!sub || !desc || !given || !due) {
             alert('Lütfen tüm alanları doldurun.');
@@ -710,12 +777,14 @@ function addHomework(e) {
             description: desc,
             givenDate: given,
             dueDate: due,
-            lesson: lesson
+            lesson: lesson,
+            assignmentType: assignType
         };
     } else {
         const sub = document.getElementById('hwSubjectQuick').value;
         const due = document.getElementById('hwDueDateQuick').value;
         const type = document.getElementById('hwTypeQuick').value;
+        const assignType = document.getElementById('hwAssignmentTypeQuick').value;
 
         if (!sub || !due) {
             alert('Lütfen tüm alanları doldurun.');
@@ -727,7 +796,8 @@ function addHomework(e) {
             description: type, // Store type in description
             givenDate: new Date().toISOString().split('T')[0], // Today
             dueDate: due,
-            lesson: "1" // Default to 1st lesson for quick entries
+            lesson: "1", // Default to 1st lesson for quick entries
+            assignmentType: assignType
         };
     }
 
@@ -754,6 +824,74 @@ function addHomework(e) {
 }
 
 function openHomeworkDetail(hw) {
+    // --- MOBILE: separate page ---
+    if (window.innerWidth <= 768) {
+        const detailPage = document.getElementById('mobileHomeworkDetailPage');
+        const homeworkPage = document.getElementById('homeworkPage');
+        if (detailPage && homeworkPage) {
+            // Populate fields
+            document.getElementById('mobileHwDetailSubject').textContent = hw.subject;
+            document.getElementById('mobileHwDetailDesc').textContent = hw.description;
+            document.getElementById('mobileHwDetailGiven').textContent = hw.givenDate;
+            document.getElementById('mobileHwDetailDue').textContent = hw.dueDate;
+            document.getElementById('mobileHwDetailLesson').textContent = `${hw.lesson}. Ders`;
+
+            // Status badge
+            const now = new Date();
+            const dueDate = new Date(hw.dueDate);
+            const diffDays = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+            const statusEl = document.getElementById('mobileHwDetailStatus');
+            if (statusEl) {
+                const isUrgent = diffDays <= 2;
+                statusEl.textContent = isUrgent ? 'ACİL' : 'ZAMAN VAR';
+                statusEl.style.background = isUrgent ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.08)';
+                statusEl.style.color = isUrgent ? '#ef4444' : 'rgba(255,255,255,0.5)';
+            }
+
+            // Edit button
+            const editBtn = document.getElementById('mobileHwDetailEditBtn');
+            if (editBtn) {
+                editBtn.onclick = () => {
+                    const password = prompt('Ödevi düzenlemek için şifreyi girin:');
+                    if (password === '829615') {
+                        closeMobileHomeworkDetail();
+                        openEditHomeworkModal(hw);
+                    } else if (password !== null) {
+                        alert('Hatalı şifre!');
+                    }
+                };
+            }
+
+            // Delete button
+            const deleteBtn = document.getElementById('mobileHwDetailDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.onclick = () => {
+                    if (!hw.id) { alert("Hata: Ödev ID'si bulunamadı!"); return; }
+                    const password = prompt('Ödevi silmek için şifreyi girin:');
+                    if (password === '829615') {
+                        if (typeof HomeworkSyncV2 !== 'undefined') {
+                            HomeworkSyncV2.deleteHomework(hw.id).then(() => {
+                                closeMobileHomeworkDetail();
+                                renderHomeworkCards();
+                                if (typeof renderMobileHomeworkList === 'function') renderMobileHomeworkList();
+                            }).catch(err => alert('Ödev silinirken hata oluştu.'));
+                        }
+                    } else if (password !== null) {
+                        alert('Hatalı şifre!');
+                    }
+                };
+            }
+
+            // Switch pages
+            homeworkPage.classList.remove('active');
+            detailPage.classList.add('active');
+            window.scrollTo(0, 0);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return;
+        }
+    }
+
+    // --- DESKTOP: modal (unchanged) ---
     const modal = document.getElementById('homeworkDetailModal');
     if (!modal) return;
 
@@ -787,7 +925,6 @@ function openHomeworkDetail(hw) {
             if (password === '829615') {
                 console.log('🗑️ Deleting homework via V2:', hw.subject);
 
-                // Use V2 sync
                 if (typeof HomeworkSyncV2 !== 'undefined') {
                     HomeworkSyncV2.deleteHomework(hw.id)
                         .then(() => {
@@ -809,6 +946,15 @@ function openHomeworkDetail(hw) {
                 alert("Hatalı şifre!");
             }
         };
+    }
+}
+
+function closeMobileHomeworkDetail() {
+    const detailPage = document.getElementById('mobileHomeworkDetailPage');
+    const homeworkPage = document.getElementById('homeworkPage');
+    if (detailPage && homeworkPage) {
+        detailPage.classList.remove('active');
+        homeworkPage.classList.add('active');
     }
 }
 

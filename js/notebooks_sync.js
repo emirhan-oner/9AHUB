@@ -1,10 +1,10 @@
 /**
- * Notebooks Sync - Supabase Integration
- * Handles all CRUD operations for the AI Notebooks system.
- * 
- * OPTIMIZED: Uses localStorage caching (5 min validity) and Optimistic UI updates
- * to minimize Supabase quota usage.
- */
+* Notebooks Sync - Supabase Integration
+* Handles all CRUD operations for the AI Notebooks system.
+* 
+* OPTIMIZED: Uses localStorage caching (5 min validity) and Optimistic UI updates
+* to minimize Supabase quota usage.
+*/
 
 const NotebooksSync = {
     config: {
