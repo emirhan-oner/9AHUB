@@ -728,41 +728,51 @@
     <!-- Homework Page -->
     <div id="homeworkPage" class="page">
         <!-- New Mobile Homework Header -->
-        <div class="mobile-header mobile-only">
-            <div class="mobile-header-top">
-                <button class="mobile-icon-back-btn" onclick="showPage('home')">
+        <div class="mobile-header mobile-only" style="padding: 30px 0 5px 0 !important; background: #fdfaf5 !important;">
+            <div class="mobile-header-top" style="padding: 0 25px 25px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <button class="mobile-icon-back-btn" onclick="showPage('home')" style="width: 42px; height: 42px; background: #fff; color: #1a1a1a; border-radius: 14px; border: 1px solid rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);">
                     <i data-lucide="chevron-left"></i>
                 </button>
-                <h1>Ödevler</h1>
+                <h1 style="font-size: 24px; font-weight: 950; color: #121212; letter-spacing: -1px; margin: 0;">Ödevler</h1>
                 <div class="mobile-header-actions">
-                    <button class="mobile-icon-btn homework-add-btn-black" onclick="openMobileAddHomeworkModal()" style="background: #000 !important; color: #fff !important; width: 54px; height: 54px; border-radius: 18px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); position: relative; z-index: 10000; cursor: pointer;">
-                        <i data-lucide="plus" style="width: 32px; height: 32px; color: #fff !important; pointer-events: none;"></i>
+                    <button class="mobile-icon-btn" onclick="openMobileAddHomeworkModal()" style="background: #000; color: #fff; width: 40px; height: 40px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                        <i data-lucide="plus"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="mobile-stats-row" style="margin-bottom: 20px;">
-                <div class="mobile-stat-card">
-                    <span class="stat-value" id="mobileHwTotalCount">0</span>
-                    <span class="stat-label">Toplam</span>
+            <div class="mobile-stats-row" style="margin-bottom: 25px; padding: 0 25px; display: flex; gap: 12px;">
+                <div class="mobile-stat-card" style="flex: 1; background: #fff; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02);">
+                    <span class="stat-value" id="mobileHwTotalCount" style="font-size: 18px; font-weight: 800; color: #1a1a1a;">0</span>
+                    <span class="stat-label" style="font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px;">Toplam</span>
                 </div>
-                <div class="mobile-stat-card urgent">
-                    <span class="stat-value" id="mobileHwUrgentCount">0</span>
-                    <span class="stat-label">Acil</span>
+                <div class="mobile-stat-card urgent" style="flex: 1; background: #fff; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02);">
+                    <span class="stat-value" id="mobileHwUrgentCount" style="font-size: 18px; font-weight: 800; color: #f3a682;">0</span>
+                    <span class="stat-label" style="font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px;">Acil</span>
                 </div>
-                <div class="mobile-stat-card completed" onclick="alert('Tamamlananlar yakında!')">
-                    <span class="stat-value">0</span>
-                    <span class="stat-label">Biten</span>
+                <div class="mobile-stat-card completed" onclick="alert('Tamamlananlar yakında!')" style="flex: 1; background: #fff; border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0, 0, 0, 0.02);">
+                    <span class="stat-value" style="font-size: 18px; font-weight: 800; color: #999;">0</span>
+                    <span class="stat-label" style="font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px;">Biten</span>
                 </div>
             </div>
             
-            
-            <!-- Minimalist Search Box (No Icon, No Placeholder) -->
-            <div class="mobile-hw-search-row" style="margin-bottom: 20px; padding: 0 5px;">
-                <input type="text" id="mobileHwSearchBox" 
-                       oninput="window._homeworkSearchQuery = this.value; if(window.renderMobileHomeworkList) window.renderMobileHomeworkList();" 
-                       style="width: 100%; background: #fff; border-radius: 22px; padding: 18px; border: none; box-shadow: 0 5px 20px rgba(0,0,0,0.03); outline: none; font-size: 16px; font-weight: 800; color: #1a1a1a; text-align: center;" 
-                       autocomplete="off">
+            <div class="mobile-hw-search-row" style="margin-bottom: 20px; padding: 0 25px;">
+                <div class="mobile-search-bar" style="background: #fff; border-radius: 20px; height: 56px; display: flex; align-items: center; padding: 0 20px; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); position: relative;">
+                    <i data-lucide="search" style="color: #f3a682; width: 20px; height: 20px;"></i>
+                    <input type="text" id="mobileHwSearchBox" 
+                           placeholder="Ödevlerde ara..."
+                           oninput="window._homeworkSearchQuery = this.value; if(window.renderMobileHomeworkList) window.renderMobileHomeworkList();" 
+                           style="width: 100%; border: none; outline: none; font-size: 15px; font-weight: 600; color: #1a1a1a; background: transparent; padding: 0;" 
+                           autocomplete="off">
+                </div>
+            </div>
+
+            <div class="mobile-hw-filter-tabs" style="margin-bottom: 25px; display: flex; gap: 10px; padding: 0 25px; overflow-x: auto; scrollbar-width: none;">
+                <button class="hw-type-tab active" id="tabIndividualMobile" onclick="setHomeworkType('individual')" style="background: #f3a682; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: all 0.3s ease; border: none; box-shadow: 0 8px 15px rgba(243, 166, 130, 0.2);">Bireysel</button>
+                <button class="hw-type-tab" id="tabGroupMobile" onclick="setHomeworkType('group')" style="background: rgba(0, 0, 0, 0.04); color: #666; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: all 0.3s ease; border: none;">Grup</button>
+                <div style="min-width: 1px; height: 16px; background: rgba(0,0,0,0.05); margin: 0 5px; align-self: center;"></div>
+                <button class="hw-tab active" onclick="sortHomework('dueDate')" style="background: #f3a682; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: all 0.3s ease; border: none; box-shadow: 0 8px 15px rgba(243, 166, 130, 0.2);">Sıradaki</button>
+                <button class="hw-tab" onclick="sortHomework('givenDate')" style="background: rgba(0, 0, 0, 0.04); color: #666; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; transition: all 0.3s ease; border: none;">Tarih</button>
             </div>
         </div>
 
@@ -987,14 +997,6 @@
 
                 <!-- Modern Mobile Homework List -->
                 <div class="mobile-only">
-                    <div class="mobile-hw-filter-tabs" style="margin-bottom: 35px; margin-top: 10px; align-items: center; display: flex; justify-content: center; gap: 8px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none;">
-                        <button class="hw-type-tab active" id="tabIndividualMobile" onclick="setHomeworkType('individual')" style="padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; font-size: 0.8rem; background: #c49673; color: #fff; box-shadow: 0 4px 15px rgba(196,150,115,0.2); transition: all 0.3s ease;">Bireysel Seçili</button>
-                        <button class="hw-type-tab" id="tabGroupMobile" onclick="setHomeworkType('group')" style="padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; font-size: 0.8rem; background: rgba(0,0,0,0.04); color: #666; transition: all 0.3s ease;">Grup Olarak</button>
-                        <div style="min-width: 1px; height: 16px; background: rgba(0,0,0,0.1); margin: 0 4px;"></div>
-                        <button class="hw-tab active" onclick="sortHomework('dueDate')" style="font-size: 0.75rem; padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; transition: all 0.3s ease;">Süresi Yaklaşan</button>
-                        <button class="hw-tab" onclick="sortHomework('givenDate')" style="font-size: 0.75rem; padding: 10px 18px; border-radius: 25px; border: none; font-weight: 700; white-space: nowrap; transition: all 0.3s ease;">Yeni Eklenenler</button>
-                    </div>
-                    
                     <div id="mobileHomeworkList" class="mobile-modern-hw-list">
                         <!-- New premium card design will be rendered here -->
                     </div>
@@ -1202,6 +1204,21 @@
                         style="display: none; background: #1a1a1a; color: #fff;" id="mobileAddExamBtn">
                         <i data-lucide="plus"></i>
                     </button>
+                </div>
+            </div>
+
+            <div class="mobile-stats-row" style="margin-bottom: 20px;">
+                <div class="mobile-stat-card">
+                    <span class="stat-value" id="mobileExamTotalCount">0</span>
+                    <span class="stat-label">Toplam</span>
+                </div>
+                <div class="mobile-stat-card urgent">
+                    <span class="stat-value" id="mobileExamUrgentCount">0</span>
+                    <span class="stat-label">Acil</span>
+                </div>
+                <div class="mobile-stat-card completed">
+                    <span class="stat-value" id="mobileExamFinishedCount">0</span>
+                    <span class="stat-label">Biten</span>
                 </div>
             </div>
 

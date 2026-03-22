@@ -10,10 +10,18 @@ let examSearchQuery = '';
 let isExamAdminMode = false; // Improved admin state
 window.examNotesCache = {};
 
+let areExamsFetched = false;
 function initExams() {
     console.log('🚀 [Exams] Hub Replication Sync...');
 
-    // Desktop Filters
+    if (!areExamsFetched && window.ExamsSync) {
+        areExamsFetched = true;
+        window.ExamsSync.fetchAll().then(() => {
+            renderExams();
+        });
+    } else {
+        renderExams();
+    }
     const filterButtons = document.querySelectorAll('.hub-filter-btn');
     filterButtons.forEach(btn => {
         btn.onclick = () => {
@@ -40,15 +48,9 @@ function initExams() {
     }
 
     // Mobile Search
-    const mobileSearchInput = document.getElementById('mobileExamSearchInput');
-    if (mobileSearchInput) {
-        mobileSearchInput.oninput = (e) => handleExamSearch(e.target.value);
-    }
-
-    if (window.ExamsSync) {
-        window.ExamsSync.fetchAll().then(() => {
-            renderExams();
-        });
+    const mSearchInput = document.getElementById('mobileExamSearchInput');
+    if (mSearchInput) {
+        mSearchInput.oninput = (e) => handleExamSearch(e.target.value);
     }
 }
 
@@ -139,6 +141,8 @@ function renderExams() {
     filtered.forEach(e => { if (!groups[e.date]) groups[e.date] = []; groups[e.date].push(e); });
 
     const sortedDates = Object.keys(groups).sort((a, b) => activeExamFilter === 'aktif' ? new Date(a) - new Date(b) : new Date(b) - new Date(a));
+    
+    updateExamStats();
 
     if (sortedDates.length === 0) {
         const emptyHtml = `<div class="col-span-full py-20 text-center text-white/20 font-black uppercase tracking-widest">Eşleşen Sınav Yok</div>`;
@@ -211,6 +215,33 @@ function renderMobileExamCard(exam) {
             ` : ''}
         </div>
     `;
+}
+
+function updateExamStats() {
+    if (!window.exams) return;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Total planned (future or today)
+    const totalExams = window.exams.filter(e => new Date(e.date) >= today).length;
+    // Biten (past)
+    const finishedExams = window.exams.filter(e => new Date(e.date) < today).length;
+    
+    // Urgent: Next 3 days (Today, Tomorrow, Overmorrow)
+    const threeDaysLater = new Date(today);
+    threeDaysLater.setDate(today.getDate() + 3);
+    const urgentExams = window.exams.filter(e => {
+        const d = new Date(e.date);
+        return d >= today && d <= threeDaysLater;
+    }).length;
+
+    const elTotal = document.getElementById('mobileExamTotalCount');
+    const elUrgent = document.getElementById('mobileExamUrgentCount');
+    const elFinished = document.getElementById('mobileExamFinishedCount');
+
+    if (elTotal) elTotal.innerText = totalExams;
+    if (elUrgent) elUrgent.innerText = urgentExams;
+    if (elFinished) elFinished.innerText = finishedExams;
 }
 
 function renderHubExamCard(exam) {
