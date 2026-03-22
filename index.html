@@ -850,22 +850,63 @@
                     }
                 </style>
                 <script>
-                    function openDesktopAddHomeworkModal() {
-                        const form = document.getElementById('mobileAddHomeworkForm');
-                        if (form) {
-                            form.classList.add('desktop-modal-active');
+                    const HW_ADMIN_PASSWORD = '829615';
+                    let _hwActionPending = null; // stores what to do after password verified
+
+                    // Opens password modal then performs action
+                    function requireHwPassword(action) {
+                        _hwActionPending = action;
+                        const modal = document.getElementById('hwPasswordModal');
+                        if (modal) {
+                            document.getElementById('hwPasswordInput').value = '';
+                            document.getElementById('hwPasswordError').style.display = 'none';
+                            modal.style.display = 'flex';
+                            setTimeout(() => document.getElementById('hwPasswordInput').focus(), 200);
                         }
                     }
 
+                    function verifyHwPassword() {
+                        const val = document.getElementById('hwPasswordInput').value;
+                        if (val === HW_ADMIN_PASSWORD) {
+                            document.getElementById('hwPasswordModal').style.display = 'none';
+                            if (typeof _hwActionPending === 'function') _hwActionPending();
+                            _hwActionPending = null;
+                        } else {
+                            document.getElementById('hwPasswordError').style.display = 'flex';
+                            document.getElementById('hwPasswordInput').value = '';
+                            document.getElementById('hwPasswordInput').focus();
+                        }
+                    }
+
+                    function closeHwPasswordModal() {
+                        document.getElementById('hwPasswordModal').style.display = 'none';
+                        _hwActionPending = null;
+                    }
+
+                    // Keydown support
+                    document.addEventListener('keydown', function(e) {
+                        const modal = document.getElementById('hwPasswordModal');
+                        if (modal && modal.style.display === 'flex' && e.key === 'Enter') verifyHwPassword();
+                        if (modal && modal.style.display === 'flex' && e.key === 'Escape') closeHwPasswordModal();
+                    });
+
+                    function openDesktopAddHomeworkModal() {
+                        requireHwPassword(() => {
+                            const form = document.getElementById('mobileAddHomeworkForm');
+                            if (form) form.classList.add('desktop-modal-active');
+                        });
+                    }
+
                     function openMobileAddHomeworkModal() {
-                        if(window.innerWidth > 768) {
-                            openDesktopAddHomeworkModal();
-                            return;
-                        }
-                        const form = document.getElementById('mobileAddHomeworkForm');
-                        if (form) {
-                            form.classList.add('mobile-fullscreen-active');
-                        }
+                        requireHwPassword(() => {
+                            if (window.innerWidth > 768) {
+                                const form = document.getElementById('mobileAddHomeworkForm');
+                                if (form) form.classList.add('desktop-modal-active');
+                                return;
+                            }
+                            const form = document.getElementById('mobileAddHomeworkForm');
+                            if (form) form.classList.add('mobile-fullscreen-active');
+                        });
                     }
                     
                     function closeMobileAddHomeworkModal() {
@@ -883,8 +924,6 @@
                         const dueDate = document.getElementById('inlineHwDueDate').value;
                         const lesson = document.getElementById('inlineHwLesson').value;
                         const assignType = document.getElementById('inlineHwAssignmentType').value;
-                        
-                        // Default givenDate to today
                         const givenDate = new Date().toISOString().split('T')[0];
 
                         if (!subject || !description || !dueDate) {
@@ -892,51 +931,77 @@
                             return;
                         }
 
-                        const homeworkData = {
-                            subject: subject,
-                            description: description,
-                            givenDate: givenDate,
-                            dueDate: dueDate,
-                            lesson: lesson,
-                            assignmentType: assignType
-                        };
-
-                        console.log('➕ Adding inline homework:', homeworkData);
+                        const homeworkData = { subject, description, givenDate, dueDate, lesson, assignmentType: assignType };
 
                         if (typeof window.HomeworkSyncV2 !== 'undefined') {
                             window.HomeworkSyncV2.addHomework(homeworkData)
                                 .then(() => {
                                     document.getElementById('inlineHomeworkForm').reset();
-                                    
-                                    // Reset date to tomorrow
                                     const dInput = document.getElementById('inlineHwDueDate');
-                                    if(dInput) {
-                                        const t = new Date();
-                                        t.setDate(t.getDate() + 1);
-                                        dInput.valueAsDate = t;
-                                    }
-
-                                    if(typeof window.renderHomeworkCards === 'function') window.renderHomeworkCards();
-                                    if(typeof window.renderMobileHomeworkList === 'function') window.renderMobileHomeworkList();
+                                    if (dInput) { const t = new Date(); t.setDate(t.getDate() + 1); dInput.valueAsDate = t; }
+                                    if (typeof window.renderHomeworkCards === 'function') window.renderHomeworkCards();
+                                    if (typeof window.renderMobileHomeworkList === 'function') window.renderMobileHomeworkList();
                                     closeMobileAddHomeworkModal();
-                                    if(typeof lucide !== 'undefined') lucide.createIcons();
+                                    if (typeof lucide !== 'undefined') lucide.createIcons();
                                 })
-                                .catch(err => {
-                                    console.error(err);
-                                    alert('Ödev eklenirken hata: ' + err.message);
-                                });
+                                .catch(err => { alert('Ödev eklenirken hata: ' + err.message); });
                         } else {
-                            alert('Sistem bağlantısı kurulamadı (Veritabanı hazır değil).');
+                            alert('Sistem bağlantısı kurulamadı.');
                         }
                     }
+
+                    // Inline Edit Modal functions
+                    function openInlineEditModal(hw) {
+                        document.getElementById('inlineEditHwId').value = hw.id;
+                        document.getElementById('inlineEditHwSubject').value = hw.subject;
+                        document.getElementById('inlineEditHwDescription').value = hw.description;
+                        document.getElementById('inlineEditHwGivenDate').value = hw.givenDate;
+                        document.getElementById('inlineEditHwDueDate').value = hw.dueDate;
+                        document.getElementById('inlineEditHwLesson').value = hw.lesson;
+                        document.getElementById('inlineEditHomeworkModal').style.display = 'flex';
+                    }
+
+                    function closeInlineEditModal() {
+                        document.getElementById('inlineEditHomeworkModal').style.display = 'none';
+                    }
+
+                    async function saveInlineEditHomework(e) {
+                        e.preventDefault();
+                        const id = document.getElementById('inlineEditHwId').value;
+                        const homeworkData = {
+                            subject: document.getElementById('inlineEditHwSubject').value,
+                            description: document.getElementById('inlineEditHwDescription').value,
+                            givenDate: document.getElementById('inlineEditHwGivenDate').value,
+                            dueDate: document.getElementById('inlineEditHwDueDate').value,
+                            lesson: document.getElementById('inlineEditHwLesson').value
+                        };
+                        if (typeof HomeworkSyncV2 !== 'undefined') {
+                            try {
+                                await HomeworkSyncV2.updateHomework(id, homeworkData);
+                                closeInlineEditModal();
+                                if (typeof renderHomeworkCards === 'function') renderHomeworkCards();
+                                if (typeof renderMobileHomeworkList === 'function') renderMobileHomeworkList();
+                                // Close detail modals
+                                const detailModal = document.getElementById('homeworkDetailModal');
+                                if (detailModal) detailModal.style.display = 'none';
+                                const mobileDetailPage = document.getElementById('mobileHomeworkDetailPage');
+                                if (mobileDetailPage) mobileDetailPage.classList.remove('active');
+                                const hwPage = document.getElementById('homeworkPage');
+                                if (hwPage) hwPage.classList.add('active');
+                            } catch (err) { alert('Güncelleme hatası: ' + err.message); }
+                        }
+                    }
+
+                    window.openInlineEditModal = openInlineEditModal;
+                    window.closeInlineEditModal = closeInlineEditModal;
+                    window.saveInlineEditHomework = saveInlineEditHomework;
+                    window.requireHwPassword = requireHwPassword;
+                    window.verifyHwPassword = verifyHwPassword;
+                    window.closeHwPasswordModal = closeHwPasswordModal;
                     
                     window.addEventListener('DOMContentLoaded', () => {
                         const dlInput = document.getElementById('inlineHwDueDate');
-                        if(dlInput) {
-                            const tmrrw = new Date();
-                            tmrrw.setDate(tmrrw.getDate() + 1);
-                            dlInput.valueAsDate = tmrrw;
-                        }
+                        if (dlInput) { const t = new Date(); t.setDate(t.getDate() + 1); dlInput.valueAsDate = t; }
                     });
                 </script>
 
@@ -2755,6 +2820,99 @@
     <script src="js/calendar_app.js"></script>
     <script src="js/obs.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Homework Password Gate Modal -->
+    <div id="hwPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999999; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px);">
+        <div style="background:#fff; border-radius:40px; padding:40px 30px; width:100%; max-width:380px; box-shadow:0 40px 80px rgba(0,0,0,0.15); text-align:center; border:1px solid rgba(166,144,118,0.15); animation:fadeIn 0.3s ease;">
+            <div style="width:72px;height:72px;background:rgba(196,150,115,0.1);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px auto;">
+                <i data-lucide="lock" style="width:32px;height:32px;color:#c49673;"></i>
+            </div>
+            <h3 style="font-size:24px;font-weight:950;letter-spacing:-0.5px;color:#413225;margin:0 0 8px 0;">Yönetici Girişi</h3>
+            <p style="font-size:14px;color:#a69076;font-weight:600;margin:0 0 28px 0;line-height:1.5;">Ödev eklemek için şifreyi girin</p>
+
+            <div style="position:relative;margin-bottom:20px;">
+                <i data-lucide="key" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:#c49673;width:20px;height:20px;"></i>
+                <input type="password" id="hwPasswordInput" placeholder="Şifre" autocomplete="off"
+                    style="width:100%;padding:18px 18px 18px 52px;border:2px solid rgba(166,144,118,0.15);border-radius:20px;font-size:16px;font-weight:800;color:#413225;background:#fdfaf5;outline:none;box-sizing:border-box;transition:all 0.3s;"
+                    onfocus="this.style.borderColor='#c49673';this.style.background='#fff';"
+                    onblur="this.style.borderColor='rgba(166,144,118,0.15)';this.style.background='#fdfaf5';">
+            </div>
+
+            <div id="hwPasswordError" style="display:none;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.08);color:#e74c3c;border-radius:14px;padding:10px;font-size:13px;font-weight:800;margin-bottom:16px;">
+                <i data-lucide="alert-circle" style="width:16px;height:16px;"></i> Hatalı şifre!
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button onclick="closeHwPasswordModal()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#f1ede6;color:#a69076;font-weight:850;font-size:14px;cursor:pointer;">Vazgeç</button>
+                <button onclick="verifyHwPassword()" style="flex:1;padding:16px;border-radius:18px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Giriş Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inline Edit Homework Modal (used by both mobile & desktop) -->
+    <div id="inlineEditHomeworkModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999998; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.65); backdrop-filter:blur(10px); box-sizing:border-box;">
+        <div style="background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:32px; padding:32px; width:100%; max-width:440px; box-shadow:0 40px 80px rgba(0,0,0,0.5); position:relative; max-height:90vh; overflow-y:auto; animation:fadeIn 0.3s ease;">
+            <button onclick="closeInlineEditModal()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.08);border:none;color:#fff;width:36px;height:36px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" style="width:18px;height:18px;"></i>
+            </button>
+
+            <h3 style="margin:0 0 24px 0;font-size:20px;color:#fff;font-weight:900;display:flex;align-items:center;gap:10px;">
+                <i data-lucide="edit-3" style="width:20px;height:20px;color:#c49673;"></i> Ödevi Düzenle
+            </h3>
+
+            <style>
+                #inlineEditHomeworkModal label { display:block; font-size:11px; color:#888; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.8px; }
+                #inlineEditHomeworkModal input, #inlineEditHomeworkModal select { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:#fff; font-size:14px; font-weight:700; outline:none; box-sizing:border-box; transition:border-color 0.3s; }
+                #inlineEditHomeworkModal input:focus, #inlineEditHomeworkModal select:focus { border-color:#c49673; }
+                #inlineEditHomeworkModal .edit-field { margin-bottom:18px; }
+            </style>
+
+            <form onsubmit="saveInlineEditHomework(event)" style="display:flex;flex-direction:column;gap:0;">
+                <input type="hidden" id="inlineEditHwId">
+
+                <div class="edit-field">
+                    <label>Ders / Başlık</label>
+                    <input type="text" id="inlineEditHwSubject" required>
+                </div>
+
+                <div class="edit-field">
+                    <label>Açıklama</label>
+                    <input type="text" id="inlineEditHwDescription" required>
+                </div>
+
+                <div style="display:flex;gap:14px;">
+                    <div class="edit-field" style="flex:1;">
+                        <label>Verildiği Tarih</label>
+                        <input type="date" id="inlineEditHwGivenDate" required>
+                    </div>
+                    <div class="edit-field" style="flex:1;">
+                        <label>Son Teslim</label>
+                        <input type="date" id="inlineEditHwDueDate" required>
+                    </div>
+                </div>
+
+                <div class="edit-field">
+                    <label>Ders Saati</label>
+                    <select id="inlineEditHwLesson">
+                        <option value="1">1. Ders</option>
+                        <option value="2">2. Ders</option>
+                        <option value="3">3. Ders</option>
+                        <option value="4">4. Ders</option>
+                        <option value="5">5. Ders</option>
+                        <option value="6">6. Ders</option>
+                        <option value="7">7. Ders</option>
+                        <option value="8">8. Ders</option>
+                    </select>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button type="button" onclick="closeInlineEditModal()" style="flex:1;padding:16px;border-radius:16px;border:none;background:rgba(255,255,255,0.06);color:#aaa;font-weight:850;font-size:14px;cursor:pointer;">İptal</button>
+                    <button type="submit" style="flex:1;padding:16px;border-radius:16px;border:none;background:#c49673;color:#fff;font-weight:850;font-size:14px;cursor:pointer;box-shadow:0 8px 20px rgba(196,150,115,0.3);">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 
 </html>

@@ -848,36 +848,33 @@ function openHomeworkDetail(hw) {
                 statusEl.style.color = isUrgent ? '#ef4444' : 'rgba(255,255,255,0.5)';
             }
 
-            // Edit button
+            // Edit button — uses new inline edit modal with password gate
             const editBtn = document.getElementById('mobileHwDetailEditBtn');
             if (editBtn) {
                 editBtn.onclick = () => {
-                    const password = prompt('Ödevi düzenlemek için şifreyi girin:');
-                    if (password === '829615') {
-                        closeMobileHomeworkDetail();
-                        openEditHomeworkModal(hw);
-                    } else if (password !== null) {
-                        alert('Hatalı şifre!');
+                    if (typeof requireHwPassword === 'function') {
+                        requireHwPassword(() => {
+                            if (typeof openInlineEditModal === 'function') openInlineEditModal(hw);
+                        });
                     }
                 };
             }
 
-            // Delete button
+            // Delete button — uses password gate modal
             const deleteBtn = document.getElementById('mobileHwDetailDeleteBtn');
             if (deleteBtn) {
                 deleteBtn.onclick = () => {
                     if (!hw.id) { alert("Hata: Ödev ID'si bulunamadı!"); return; }
-                    const password = prompt('Ödevi silmek için şifreyi girin:');
-                    if (password === '829615') {
-                        if (typeof HomeworkSyncV2 !== 'undefined') {
-                            HomeworkSyncV2.deleteHomework(hw.id).then(() => {
-                                closeMobileHomeworkDetail();
-                                renderHomeworkCards();
-                                if (typeof renderMobileHomeworkList === 'function') renderMobileHomeworkList();
-                            }).catch(err => alert('Ödev silinirken hata oluştu.'));
-                        }
-                    } else if (password !== null) {
-                        alert('Hatalı şifre!');
+                    if (typeof requireHwPassword === 'function') {
+                        requireHwPassword(() => {
+                            if (typeof HomeworkSyncV2 !== 'undefined') {
+                                HomeworkSyncV2.deleteHomework(hw.id).then(() => {
+                                    closeMobileHomeworkDetail();
+                                    renderHomeworkCards();
+                                    if (typeof renderMobileHomeworkList === 'function') renderMobileHomeworkList();
+                                }).catch(err => alert('Ödev silinirken hata oluştu.'));
+                            }
+                        });
                     }
                 };
             }
@@ -905,11 +902,10 @@ function openHomeworkDetail(hw) {
     const editBtn = document.getElementById('editHomeworkBtn');
     if (editBtn) {
         editBtn.onclick = () => {
-            const password = prompt("Ödevi düzenlemek için şifreyi girin:");
-            if (password === '829615') {
-                openEditHomeworkModal(hw);
-            } else if (password !== null) {
-                alert("Hatalı şifre!");
+            if (typeof requireHwPassword === 'function') {
+                requireHwPassword(() => {
+                    if (typeof openInlineEditModal === 'function') openInlineEditModal(hw);
+                });
             }
         };
     }
@@ -917,33 +913,21 @@ function openHomeworkDetail(hw) {
     const deleteBtn = document.getElementById('deleteHomeworkBtn');
     if (deleteBtn) {
         deleteBtn.onclick = () => {
-            if (!hw.id) {
-                alert("Hata: Ödev ID'si bulunamadı!");
-                return;
-            }
-            const password = prompt("Ödevi silmek için şifreyi girin:");
-            if (password === '829615') {
-                console.log('🗑️ Deleting homework via V2:', hw.subject);
-
-                if (typeof HomeworkSyncV2 !== 'undefined') {
-                    HomeworkSyncV2.deleteHomework(hw.id)
-                        .then(() => {
-                            console.log('✅ Homework deleted successfully');
-                            closeHomeworkDetailModal();
-                            renderHomeworkCards();
-                            if (typeof renderMobileHomeworkList === 'function') {
-                                renderMobileHomeworkList();
-                            }
-                        })
-                        .catch(err => {
-                            console.error('❌ Failed to delete homework:', err);
-                            alert('Ödev silinirken hata oluştu. Konsolu kontrol edin.');
-                        });
-                } else {
-                    alert('Sync sistemi yüklenmedi!');
-                }
-            } else if (password !== null) {
-                alert("Hatalı şifre!");
+            if (!hw.id) { alert("Hata: Ödev ID'si bulunamadı!"); return; }
+            if (typeof requireHwPassword === 'function') {
+                requireHwPassword(() => {
+                    if (typeof HomeworkSyncV2 !== 'undefined') {
+                        HomeworkSyncV2.deleteHomework(hw.id)
+                            .then(() => {
+                                closeHomeworkDetailModal();
+                                renderHomeworkCards();
+                                if (typeof renderMobileHomeworkList === 'function') renderMobileHomeworkList();
+                            })
+                            .catch(err => alert('Ödev silinirken hata oluştu.'));
+                    } else {
+                        alert('Sync sistemi yüklenmedi!');
+                    }
+                });
             }
         };
     }
