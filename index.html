@@ -860,7 +860,8 @@
                         if (modal) {
                             document.getElementById('hwPasswordInput').value = '';
                             document.getElementById('hwPasswordError').style.display = 'none';
-                            modal.style.display = 'flex';
+                            modal.classList.add('hw-modal-open');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
                             setTimeout(() => document.getElementById('hwPasswordInput').focus(), 200);
                         }
                     }
@@ -868,7 +869,7 @@
                     function verifyHwPassword() {
                         const val = document.getElementById('hwPasswordInput').value;
                         if (val === HW_ADMIN_PASSWORD) {
-                            document.getElementById('hwPasswordModal').style.display = 'none';
+                            document.getElementById('hwPasswordModal').classList.remove('hw-modal-open');
                             if (typeof _hwActionPending === 'function') _hwActionPending();
                             _hwActionPending = null;
                         } else {
@@ -879,15 +880,14 @@
                     }
 
                     function closeHwPasswordModal() {
-                        document.getElementById('hwPasswordModal').style.display = 'none';
+                        document.getElementById('hwPasswordModal').classList.remove('hw-modal-open');
                         _hwActionPending = null;
                     }
 
-                    // Keydown support
                     document.addEventListener('keydown', function(e) {
                         const modal = document.getElementById('hwPasswordModal');
-                        if (modal && modal.style.display === 'flex' && e.key === 'Enter') verifyHwPassword();
-                        if (modal && modal.style.display === 'flex' && e.key === 'Escape') closeHwPasswordModal();
+                        if (modal && modal.classList.contains('hw-modal-open') && e.key === 'Enter') verifyHwPassword();
+                        if (modal && modal.classList.contains('hw-modal-open') && e.key === 'Escape') closeHwPasswordModal();
                     });
 
                     function openDesktopAddHomeworkModal() {
@@ -2821,14 +2821,31 @@
     <script src="js/obs.js"></script>
     <script src="js/app.js"></script>
 
+    <style>
+        #hwPasswordModal { display: none; }
+        #hwPasswordModal.hw-modal-open {
+            display: flex !important;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 999999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+    </style>
+
     <!-- Homework Password Gate Modal -->
-    <div id="hwPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:999999; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px);">
-        <div style="background:#fff; border-radius:40px; padding:40px 30px; width:100%; max-width:380px; box-shadow:0 40px 80px rgba(0,0,0,0.15); text-align:center; border:1px solid rgba(166,144,118,0.15); animation:fadeIn 0.3s ease;">
+    <div id="hwPasswordModal">
+        <div style="background:#fff; border-radius:40px; padding:40px 30px; width:100%; max-width:380px; box-shadow:0 40px 80px rgba(0,0,0,0.15); text-align:center; border:1px solid rgba(166,144,118,0.15);">
             <div style="width:72px;height:72px;background:rgba(196,150,115,0.1);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px auto;">
                 <i data-lucide="lock" style="width:32px;height:32px;color:#c49673;"></i>
             </div>
             <h3 style="font-size:24px;font-weight:950;letter-spacing:-0.5px;color:#413225;margin:0 0 8px 0;">Yönetici Girişi</h3>
-            <p style="font-size:14px;color:#a69076;font-weight:600;margin:0 0 28px 0;line-height:1.5;">Ödev eklemek için şifreyi girin</p>
+            <p style="font-size:14px;color:#a69076;font-weight:600;margin:0 0 28px 0;line-height:1.5;">Ödev eklemek / düzenlemek için şifreyi girin</p>
 
             <div style="position:relative;margin-bottom:20px;">
                 <i data-lucide="key" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);color:#c49673;width:20px;height:20px;"></i>
@@ -2838,7 +2855,7 @@
                     onblur="this.style.borderColor='rgba(166,144,118,0.15)';this.style.background='#fdfaf5';">
             </div>
 
-            <div id="hwPasswordError" style="display:none;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.08);color:#e74c3c;border-radius:14px;padding:10px;font-size:13px;font-weight:800;margin-bottom:16px;">
+            <div id="hwPasswordError" style="display:none;flex-direction:row;align-items:center;justify-content:center;gap:8px;background:rgba(231,76,60,0.08);color:#e74c3c;border-radius:14px;padding:10px;font-size:13px;font-weight:800;margin-bottom:16px;">
                 <i data-lucide="alert-circle" style="width:16px;height:16px;"></i> Hatalı şifre!
             </div>
 
