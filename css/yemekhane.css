@@ -1,0 +1,173 @@
+/* --- Yemekhane Page Styles --- */
+
+/* Desktop Table (Hidden on mobile via media query) */
+.yemekhane-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 40px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(166, 144, 118, 0.1);
+}
+
+.yemek-title {
+    font-size: 32px;
+    font-weight: 950;
+    color: #413225;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.yemek-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.yemek-table th {
+    padding: 20px 15px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 900;
+    color: #a69076;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #f1ede6;
+}
+
+.yemek-table td {
+    padding: 20px 15px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #121212;
+    border-bottom: 1px solid #fdfaf5;
+}
+
+.yemek-table tr:last-child td {
+    border-bottom: none;
+}
+
+.yemek-table td small {
+    color: #a69076;
+    font-weight: 600;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .yemekhane-container {
+        display: none !important;
+    }
+
+    #yemekhanePage {
+        background: #fdfaf5 !important;
+        min-height: 100vh;
+        padding-bottom: 150px;
+    }
+
+    .mobile-yemek-content {
+        padding: 0 25px;
+        margin-top: 10px;
+    }
+
+    .yemek-card {
+        background: #fff;
+        border-radius: 30px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .yemek-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed rgba(166, 144, 118, 0.15);
+    }
+
+    .yemek-date {
+        font-size: 13px;
+        font-weight: 950;
+        color: #121212;
+    }
+
+    .yemek-day {
+        font-size: 11px;
+        font-weight: 900;
+        color: #a69076;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .yemek-card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .yemek-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .yemek-item i {
+        width: 20px;
+        height: 20px;
+        color: #c49673;
+        flex-shrink: 0;
+    }
+
+    .yemek-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .yemek-text label {
+        font-size: 9px;
+        font-weight: 950;
+        color: #bbb;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .yemek-text span {
+        font-size: 14px;
+        font-weight: 800;
+        color: #413225;
+    }
+
+    .yemek-card.today-highlight {
+        border: 2px solid #c49673;
+        background: rgba(196, 150, 115, 0.05);
+        box-shadow: 0 15px 40px rgba(196, 150, 115, 0.1);
+    }
+
+    .today-badge {
+        background: #c49673;
+        color: #fff;
+        font-size: 9px;
+        font-weight: 950;
+        padding: 4px 8px;
+        border-radius: 8px;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Desktop Highlight */
+.yemek-table tr.today-highlight {
+    background: rgba(196, 150, 115, 0.05);
+}
+.yemek-table tr.today-highlight td {
+    color: #c49673 !important;
+}
+
+
+
+/* Visibility Control in mobile_modern.css is needed but we can also use: */
+#yemekhanePage:not(.active) {
+    display: none !important;
+}

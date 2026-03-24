@@ -173,8 +173,14 @@ function renderExams() {
     // Render Mobile Grid
     if (mobileContainer) {
         let mobileHtml = '';
+        let lastDate = null;
+        let isAlternate = false;
         filtered.forEach(exam => {
-            mobileHtml += renderMobileExamCard(exam);
+            if (exam.date !== lastDate) {
+                isAlternate = !isAlternate;
+                lastDate = exam.date;
+            }
+            mobileHtml += renderMobileExamCard(exam, isAlternate);
         });
         mobileContainer.innerHTML = mobileHtml;
     }
@@ -182,13 +188,14 @@ function renderExams() {
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-function renderMobileExamCard(exam) {
+function renderMobileExamCard(exam, isAlternate = false) {
     const subject = exam.subject || 'DERS ADI';
     const date = formatExamDate(exam.date);
     const lesson = exam.lessonNumber ? (String(exam.lessonNumber).toLowerCase().includes('ders') ? exam.lessonNumber : `${exam.lessonNumber}. Ders`) : '-';
+    const altClass = isAlternate ? 'alternate-bg' : '';
 
     return `
-        <div class="mobile-exam-card-modern animate-fade-in" onclick="window.openExamModal('${exam.id}')">
+        <div class="mobile-exam-card-modern ${altClass} animate-fade-in" onclick="window.openExamModal('${exam.id}')">
             <span class="exam-card-subject-v2">${subject.toUpperCase()}</span>
             <span class="exam-card-title-v2">${subject} Yazılı Sınavı</span>
             

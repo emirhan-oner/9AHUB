@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/mobile_modern.css">
     <link rel="stylesheet" href="css/hub_mobile.css">
     <link rel="stylesheet" href="css/calendar_app.css">
+    <link rel="stylesheet" href="css/yemekhane.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -155,6 +156,8 @@
             </form>
         </div>
     </div>
+
+
     <header>
         <div class="header-container">
             <div class="logo" onclick="showPage('home')">SOSYAAL 9A</div>
@@ -166,6 +169,7 @@
                 <a onclick="showPage('hub')" id="nav-hub">HUB</a>
                 <a onclick="showPage('obs')" id="nav-obs">ÖBS</a>
                 <a onclick="showPage('calendar')" id="nav-calendar">Takvim</a>
+                <a onclick="showPage('yemekhane')" id="nav-yemekhane">Yemekhane</a>
             </nav>
         </div>
     </header>
@@ -278,6 +282,7 @@
                     <a onclick="showPage('hub')">Hub</a>
                     <a onclick="showPage('obs')">ÖBS</a>
                     <a onclick="showPage('calendar')">Takvim</a>
+                    <a onclick="showPage('yemekhane')">Yemekhane</a>
                 </div>
             </div>
 
@@ -1999,6 +2004,47 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Yemekhane Page -->
+    <div id="yemekhanePage" class="page">
+        <!-- Desktop Desktop Header -->
+        <div class="desktop-only">
+            <div class="yemekhane-container">
+                <h1 class="yemek-title">YEMEK LİSTESİ</h1>
+                <table class="yemek-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Öğün</th>
+                            <th>Çorba</th>
+                            <th>Ana Yemek</th>
+                            <th>Yardımcı</th>
+                            <th>Tatlı / İçecek</th>
+                        </tr>
+                    </thead>
+                    <tbody id="yemekTableBody">
+                        <!-- JS injects here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile View -->
+        <div class="mobile-only">
+            <div class="mobile-header">
+                <div class="mobile-header-top">
+                    <button class="mobile-icon-back-btn" onclick="showPage('home')">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <h1>Yemekhane</h1>
+                </div>
+            </div>
+            <div class="mobile-yemek-content" id="mobileYemekList">
+                <!-- JS injects here -->
+            </div>
+        </div>
+    </div>
 
         <!-- Homework Detail Modal -->
         <div id="homeworkDetailModal" class="modal"
@@ -2596,6 +2642,7 @@
         <script src="js/homework.js"></script>
         <script src="js/shortcuts_sync.js"></script>
         <script src="js/hub_core.js"></script>
+        <script src="js/yemekhane.js"></script>
         <!-- === SHORTCUTS SYSTEM (Self-contained) === -->
         <style>
             .shortcuts-row {

@@ -178,6 +178,7 @@ function showPage(pageName) {
     }
     if (window.lucide) lucide.createIcons();
 
+
     if (pageName === 'home') {
         const homePage = document.getElementById('homePage');
         const mobileNav = document.getElementById('mobile-nav-home');
@@ -283,6 +284,12 @@ function showPage(pageName) {
         if (obsPage) obsPage.classList.add('active');
         if (navObs) navObs.classList.add('active');
         if (typeof initOBS === 'function') initOBS();
+    } else if (pageName === 'yemekhane') {
+        const yemekhanePage = document.getElementById('yemekhanePage');
+        const navYemekhane = document.getElementById('nav-yemekhane');
+        if (yemekhanePage) yemekhanePage.classList.add('active');
+        if (navYemekhane) navYemekhane.classList.add('active');
+        if (typeof initYemekhane === 'function') initYemekhane();
     }
 }
 

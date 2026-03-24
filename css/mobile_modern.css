@@ -577,6 +577,7 @@
     #mobileCalendarPage:not(.active),
     #weatherDetailPage:not(.active),
     #remindersPage:not(.active),
+    #yemekhanePage:not(.active),
     #calendarPage:not(.active) {
         display: none !important;
     }
@@ -1078,6 +1079,11 @@
         border: 1px solid rgba(0, 0, 0, 0.02);
         position: relative;
     }
+
+    .mobile-exam-card-modern.alternate-bg {
+        background: #f1f2f6; /* Subtle distinct gray */
+    }
+
 
     .exam-card-subject-v2 {
         display: inline-block;
