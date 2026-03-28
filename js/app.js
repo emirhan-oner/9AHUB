@@ -278,6 +278,9 @@ function showPage(pageName) {
         const remindersPage = document.getElementById('remindersPage');
         if (remindersPage) remindersPage.classList.add('active');
         initReminders();
+        // Hide dot when viewing page
+        const dot = document.getElementById('remDot');
+        if (dot) dot.style.display = 'none';
     } else if (pageName === 'obs') {
         const obsPage = document.getElementById('obsPage');
         const navObs = document.getElementById('nav-obs');
@@ -519,9 +522,14 @@ function renderReminders() {
                             <p class="rem-desc">${rem.desc}</p>
                         </div>
                         ${isAdmin ? `
-                            <button class="delete-rem-btn" onclick="deleteReminder('${rem.id}')">
-                                <i data-lucide="trash-2"></i>
-                            </button>
+                            <div class="rem-admin-actions">
+                                <button class="edit-rem-btn" onclick="openEditReminderModal('${rem.id}')">
+                                    <i data-lucide="edit-3"></i>
+                                </button>
+                                <button class="delete-rem-btn" onclick="deleteReminder('${rem.id}')">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
                         ` : ''}
                     </div>
                     <div class="reminder-footer">
@@ -537,6 +545,13 @@ function renderReminders() {
     }
 
     if (countBadge) countBadge.textContent = remindersData.length;
+    
+    // Toggle notification dot
+    const dot = document.getElementById('remDot');
+    if (dot) {
+        dot.style.display = remindersData.length > 0 ? 'block' : 'none';
+    }
+
     if (window.lucide) lucide.createIcons();
 }
 
@@ -583,6 +598,7 @@ function onTimeModeChange() {
 }
 
 function saveReminder() {
+    const editId = document.getElementById('remEditId').value;
     const type = document.getElementById('remType').value;
     const title = document.getElementById('remTitle').value;
     const desc = document.getElementById('remDesc').value;
@@ -619,8 +635,7 @@ function saveReminder() {
         }
     }
 
-    const newRem = {
-        id: 'rem-' + Date.now(),
+    const reminderData = {
         type,
         title,
         desc,
@@ -629,25 +644,56 @@ function saveReminder() {
         urgency: urgency
     };
 
-    // Save to Supabase asynchronously
-    fetch(SUPABASE_REM_URL, {
-        method: 'POST',
-        headers: {
-            'apikey': SUPABASE_REM_KEY,
-            'Authorization': `Bearer ${SUPABASE_REM_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(newRem)
-    }).catch(e => console.error("Supabase Save Error:", e));
+    if (editId) {
+        // Update existing
+        fetch(`${SUPABASE_REM_URL}?id=eq.${editId}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_REM_KEY,
+                'Authorization': `Bearer ${SUPABASE_REM_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reminderData)
+        }).catch(e => console.error("Supabase Update Error:", e));
 
-    remindersData.push(newRem);
+        const index = remindersData.findIndex(r => r.id === editId);
+        if (index !== -1) {
+            remindersData[index] = { ...remindersData[index], ...reminderData };
+        }
+    } else {
+        // Create new
+        const newRem = {
+            id: 'rem-' + Date.now(),
+            ...reminderData
+        };
+
+        fetch(SUPABASE_REM_URL, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_REM_KEY,
+                'Authorization': `Bearer ${SUPABASE_REM_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(newRem)
+        }).catch(e => console.error("Supabase Save Error:", e));
+
+        remindersData.push(newRem);
+    }
+
     localStorage.setItem('classReminders', JSON.stringify(remindersData));
     
     closeAddReminderModal();
     renderReminders();
     
     // Reset form fields
+    resetReminderForm();
+}
+
+function resetReminderForm() {
+    document.getElementById('remEditId').value = '';
+    document.getElementById('remModalTitle').textContent = 'Yeni Hatırlatıcı';
+    document.getElementById('remSubmitBtn').textContent = 'Oluştur';
     document.getElementById('remTitle').value = '';
     document.getElementById('remDesc').value = '';
     document.getElementById('remDate').value = '';
@@ -655,8 +701,37 @@ function saveReminder() {
     document.getElementById('remDuration').value = '';
     document.getElementById('remType').value = 'countdown';
     document.getElementById('remTimeMode').value = 'datetime';
+    document.querySelector('input[name="remUrgency"][value="med"]').checked = true;
     onReminderTypeChange();
     onTimeModeChange();
+}
+
+function openEditReminderModal(id) {
+    const rem = remindersData.find(r => r.id === id);
+    if (!rem) return;
+
+    // Set fields
+    document.getElementById('remEditId').value = rem.id;
+    document.getElementById('remModalTitle').textContent = 'Hatırlatıcıyı Düzenle';
+    document.getElementById('remSubmitBtn').textContent = 'Güncelle';
+    
+    document.getElementById('remType').value = rem.type;
+    document.getElementById('remTitle').value = rem.title;
+    document.getElementById('remDesc').value = rem.desc;
+    document.getElementById('remCategory').value = rem.category;
+    
+    document.querySelector(`input[name="remUrgency"][value="${rem.urgency}"]`).checked = true;
+
+    if (rem.type === 'countdown' && rem.target) {
+        const dateObj = new Date(rem.target);
+        document.getElementById('remTimeMode').value = 'datetime';
+        document.getElementById('remDate').value = dateObj.toISOString().split('T')[0];
+        document.getElementById('remTime').value = dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    onReminderTypeChange();
+    onTimeModeChange();
+    openAddReminderModal();
 }
 
 function deleteReminder(id) {
@@ -737,6 +812,7 @@ function openAddReminderModal() {
 
 function closeAddReminderModal() {
     document.getElementById('addReminderModal').style.display = 'none';
+    resetReminderForm();
 }
 
 

@@ -266,6 +266,7 @@
                     </div>
                     <div class="header-icon-btn" onclick="showPage('reminders')">
                         <i data-lucide="bell"></i>
+                        <span id="remDot" class="notification-dot"></span>
                     </div>
                     <div class="profile-avatar-circle">
                         <span>9A</span>
@@ -518,10 +519,11 @@
         <div class="modal-backdrop" onclick="closeAddReminderModal()"></div>
         <div class="modal-container animate-fade-in">
             <div class="modal-header">
-                <h3>Yeni Hatırlatıcı</h3>
-                <p>Sınıf için bir duyuru veya sayaç oluşturun.</p>
+                <h3 id="remModalTitle">Yeni Hatırlatıcı</h3>
+                <p id="remModalDesc">Sınıf için bir duyuru veya sayaç oluşturun.</p>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="remEditId" value="">
                 <div class="form-group">
                     <label>Tür</label>
                     <select id="remType" onchange="onReminderTypeChange()">
@@ -586,7 +588,7 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn-cancel" onclick="closeAddReminderModal()">İptal</button>
-                <button class="modal-btn-confirm" onclick="saveReminder()">Oluştur</button>
+                <button class="modal-btn-confirm" id="remSubmitBtn" onclick="saveReminder()">Oluştur</button>
             </div>
         </div>
     </div>
