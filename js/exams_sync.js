@@ -38,6 +38,7 @@ const ExamsSync = {
                 scenarioLink: item.scenario_link,
                 mebSampleLink: item.meb_sample_link,
                 teacherNotes: item.teacher_notes,
+                driveLinks: item.drive_links || '',
                 category: '-' // Deprecated
             }));
 
@@ -56,9 +57,9 @@ const ExamsSync = {
                 window.exams = exams;
 
                 // Trigger UI update if changed
-                if (newDataStr !== oldDataStr && typeof applyFilters === 'function') {
+                if (newDataStr !== oldDataStr && typeof window.renderExams === 'function') {
                     console.log('✨ [Exams] Updates detected, refreshing UI...');
-                    applyFilters();
+                    window.renderExams();
                 }
             }
 
@@ -93,7 +94,7 @@ const ExamsSync = {
                     scenario_link: data.scenarioLink,
                     meb_sample_link: data.mebSampleLink,
                     teacher_notes: data.teacherNotes,
-                    // category removed
+                    drive_links: data.driveLinks
                 })
             });
 
@@ -130,7 +131,7 @@ const ExamsSync = {
                     scenario_link: data.scenarioLink,
                     meb_sample_link: data.mebSampleLink,
                     teacher_notes: data.teacherNotes,
-                    // category removed
+                    drive_links: data.driveLinks
                 })
             });
 
