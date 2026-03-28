@@ -371,6 +371,60 @@ window.openExamModal = function(id) {
                     scLink.classList.add('hidden');
                 }
 
+                // Render Modular Drive Links (Notes)
+                const driveNotesContainer = document.getElementById('mobileDriveNotesList');
+                if (driveNotesContainer) {
+                    driveNotesContainer.innerHTML = '';
+                    const driveLinksRaw = targetExam.driveLinks || '';
+                    let groups = [];
+                    
+                    try {
+                        // Try to parse as JSON (New Modular Format)
+                        groups = JSON.parse(driveLinksRaw);
+                    } catch (e) {
+                        // Fallback to old "Title|URL" format if not JSON
+                        const entries = driveLinksRaw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                        if (entries.length > 0) {
+                            groups = [{ category: 'Öne Çıkan Notlar', links: [] }];
+                            entries.forEach(entry => {
+                                const parts = entry.split('|');
+                                groups[0].links.push({
+                                    title: parts.length > 1 ? parts[0] : 'Çalışma Notu',
+                                    url: parts.length > 1 ? parts[1] : parts[0]
+                                });
+                            });
+                        }
+                    }
+                    
+                    if (groups.length > 0) {
+                        document.getElementById('mobileDriveNotesSection').classList.remove('hidden');
+                        groups.forEach(group => {
+                            if (group.links && group.links.length > 0) {
+                                // Add Category Header
+                                if (group.category) {
+                                    const header = document.createElement('div');
+                                    header.style.cssText = 'font-size: 11px; font-weight: 900; color: #413225; opacity: 0.6; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px;';
+                                    header.innerText = group.category;
+                                    driveNotesContainer.appendChild(header);
+                                }
+                                
+                                // Add Links in that category
+                                group.links.forEach(link => {
+                                    const btn = document.createElement('a');
+                                    btn.href = link.url;
+                                    btn.target = '_blank';
+                                    btn.className = 'mobile-action-link frosted-blue';
+                                    btn.style.marginTop = '8px';
+                                    btn.innerHTML = `<i data-lucide="external-link" style="width: 16px; height: 16px;"></i> ${link.title}`;
+                                    driveNotesContainer.appendChild(btn);
+                                });
+                            }
+                        });
+                    } else {
+                        document.getElementById('mobileDriveNotesSection').classList.add('hidden');
+                    }
+                }
+
                 // Switch pages
                 examsPage.classList.remove('active');
                 detailPage.classList.add('active');
@@ -870,6 +924,9 @@ function openAdminModal(editId = null) {
             document.getElementById('newExamScenarioLink').value = exam.scenarioLink || '';
             document.getElementById('newExamMebLink').value = exam.mebSampleLink || '';
             document.getElementById('newExamTeacherNotes').value = exam.teacherNotes || '';
+            
+            // Populate Drive Link Manager
+            populateDriveLinkEditor(exam.driveLinks);
 
             // Same for Quick fields
             document.getElementById('quickExamSubject').value = exam.subject || '';
@@ -889,15 +946,33 @@ function openAdminModal(editId = null) {
         modal.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 999999 !important; pointer-events: auto !important; position: fixed !important; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center;';
     }
     document.body.style.overflow = 'hidden';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function closeAdminModal() {
+    console.log("Closing Admin Modal...");
     const modal = document.getElementById('adminPanelModal');
     if (modal) {
         modal.classList.remove('active');
+        // Clear the !important inline styles set in openAdminModal
+        modal.style.setProperty('display', 'none', 'important');
+        modal.style.setProperty('visibility', 'hidden', 'important');
+        modal.style.setProperty('opacity', '0', 'important');
+        modal.style.setProperty('pointer-events', 'none', 'important');
+        
         document.body.style.overflow = '';
         // Reset mode to detailed on close
-        switchExamFormMode('detailed');
+        try {
+            switchExamFormMode('detailed');
+        } catch(e) { console.error(e); }
+
+        // Navigation fix: Return to exams list if we were in detail view
+        const detailPage = document.getElementById('mobileExamDetailPage');
+        const examsPage = document.getElementById('examsPage');
+        if (detailPage && detailPage.classList.contains('active')) {
+            detailPage.classList.remove('active');
+            if (examsPage) examsPage.classList.add('active');
+        }
     }
 }
 
@@ -906,8 +981,7 @@ function switchExamFormMode(mode) {
     const detailed = document.getElementById('detailedExamSection');
     const quick = document.getElementById('quickExamSection');
     const glider = document.getElementById('examModeGlider');
-    const btns = modal.querySelectorAll('.mode-toggle-btn'); // Fixing context error from homework attempt
-
+    
     // Re-calculating btns specifically for exam modal
     const examModal = document.getElementById('adminPanelModal');
     const examBtns = examModal ? examModal.querySelectorAll('.mode-toggle-btn') : [];
@@ -945,7 +1019,8 @@ async function handleNewExam(event) {
             scenarioLink: document.getElementById('newExamScenarioLink').value,
             mebSampleLink: document.getElementById('newExamMebLink').value,
             teacherNotes: document.getElementById('newExamTeacherNotes').value,
-            uploader: document.getElementById('newExamTeacher').value
+            uploader: document.getElementById('newExamTeacher').value,
+            driveLinks: serializeDriveLinkEditor() // Dynamic serialization
         };
     } else {
         examData = {
@@ -958,7 +1033,8 @@ async function handleNewExam(event) {
             scenarioLink: '',
             mebSampleLink: '',
             teacherNotes: '',
-            uploader: ''
+            uploader: '',
+            driveLinks: ''
         };
     }
 
@@ -980,6 +1056,11 @@ async function handleNewExam(event) {
         }
 
         closeAdminModal();
+        
+        // Refresh data
+        if (window.ExamsSync && window.ExamsSync.fetchAll) {
+            await window.ExamsSync.fetchAll();
+        }
         renderExams();
     } catch (err) {
         alert("Hata: " + err.message);
@@ -1022,3 +1103,133 @@ window.closeNoteUploadModal = closeNoteUploadModal;
 window.handleNoteUpload = handleNoteUpload;
 
 if (typeof window.initExams === 'function') window.initExams();
+
+// === Modular Drive Link Manager Core Logic ===
+window.driveLinkData = [];
+
+function populateDriveLinkEditor(rawString) {
+    window.driveLinkData = [];
+    try {
+        if (rawString) {
+            // Check if it's JSON
+            if (rawString.trim().startsWith('[') || rawString.trim().startsWith('{')) {
+                const parsed = JSON.parse(rawString);
+                if (Array.isArray(parsed)) window.driveLinkData = parsed;
+            } else {
+                // Fallback for old format migration
+                const entries = rawString.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                if (entries.length > 0) {
+                    const links = entries.map(entry => {
+                        const parts = entry.split('|');
+                        return {
+                            title: parts.length > 1 ? parts[0] : 'Çalışma Notu',
+                            url: parts.length > 1 ? parts[1] : parts[0]
+                        };
+                    });
+                    window.driveLinkData = [{ category: 'Genel Notlar', links: links }];
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Link editor populate error:", e);
+    }
+    
+    // Always start with at least one empty group if none exists
+    if (window.driveLinkData.length === 0) {
+        window.driveLinkData = [{ category: '', links: [{ title: '', url: '' }] }];
+    }
+    
+    renderDriveLinkEditor();
+}
+
+function renderDriveLinkEditor() {
+    const container = document.getElementById('driveLinksContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    window.driveLinkData.forEach((group, groupIdx) => {
+        const groupEl = document.createElement('div');
+        groupEl.style.cssText = 'background: rgba(0,0,0,0.03); border: 2px dashed rgba(0,0,0,0.05); padding: 15px; border-radius: 18px; position: relative; margin-bottom: 10px;';
+        
+        groupEl.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <input type="text" placeholder="Kategori Başlığı (Örn: Konu Anlatımı)" value="${group.category || ''}" 
+                    oninput="updateDriveCategory(${groupIdx}, this.value)"
+                    class="admin-input" style="height: 45px; flex-grow: 1; margin-right: 10px; font-weight: 850; font-size: 13px; background: #fff !important;">
+                <button type="button" onclick="removeDriveCategory(${groupIdx})" style="background: rgba(231,76,60,0.1); color: #e74c3c; border: none; width: 35px; height: 35px; border-radius: 10px; cursor:pointer; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
+                </button>
+            </div>
+            <div id="groupLinks_${groupIdx}" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Links will go here -->
+            </div>
+            <button type="button" onclick="addDriveLink(${groupIdx})" style="width: 100%; border: 1px dashed rgba(59, 130, 246, 0.3); background: transparent; color: #3b82f6; padding: 10px; border-radius: 12px; margin-top: 10px; font-size: 11px; font-weight: 900; cursor: pointer;">
+                + BU KATEGORİYE LİNK EKLE
+            </button>
+        `;
+
+        const linksCont = groupEl.querySelector(`#groupLinks_${groupIdx}`);
+        group.links.forEach((link, linkIdx) => {
+            const linkRow = document.createElement('div');
+            linkRow.style.cssText = 'display: flex; gap: 8px;';
+            linkRow.innerHTML = `
+                <input type="text" placeholder="Not İsmi" value="${link.title || ''}" 
+                    oninput="updateDriveLink(${groupIdx}, ${linkIdx}, 'title', this.value)"
+                    class="admin-input" style="height: 40px; flex: 1; font-size: 12px; background: #fff !important;">
+                <input type="text" placeholder="URL" value="${link.url || ''}" 
+                    oninput="updateDriveLink(${groupIdx}, ${linkIdx}, 'url', this.value)"
+                    class="admin-input" style="height: 40px; flex: 2; font-size: 12px; background: #fff !important;">
+                <button type="button" onclick="removeDriveLink(${groupIdx}, ${linkIdx})" style="background: rgba(231,76,60,0.05); color: #e74c3c; border: none; width: 32px; height: 40px; border-radius: 10px; cursor:pointer; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="x" style="width:14px; height:14px;"></i>
+                </button>
+            `;
+            linksCont.appendChild(linkRow);
+        });
+
+        container.appendChild(groupEl);
+    });
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// Global exposure for editor actions
+window.addDriveCategory = function() {
+    window.driveLinkData.push({ category: '', links: [{ title: '', url: '' }] });
+    renderDriveLinkEditor();
+};
+
+window.removeDriveCategory = function(idx) {
+    window.driveLinkData.splice(idx, 1);
+    renderDriveLinkEditor();
+};
+
+window.updateDriveCategory = function(idx, val) {
+    window.driveLinkData[idx].category = val;
+};
+
+window.addDriveLink = function(groupIdx) {
+    window.driveLinkData[groupIdx].links.push({ title: '', url: '' });
+    renderDriveLinkEditor();
+};
+
+window.updateDriveLink = function(groupIdx, linkIdx, field, val) {
+    window.driveLinkData[groupIdx].links[linkIdx][field] = val;
+};
+
+window.removeDriveLink = function(groupIdx, linkIdx) {
+    window.driveLinkData[groupIdx].links.splice(linkIdx, 1);
+    renderDriveLinkEditor();
+};
+
+function serializeDriveLinkEditor() {
+    const cleaned = window.driveLinkData
+        .map(g => ({
+            category: g.category.trim(),
+            links: g.links.filter(l => l.title.trim() || l.url.trim())
+        }))
+        .filter(g => g.category || g.links.length > 0);
+    
+    return cleaned.length > 0 ? JSON.stringify(cleaned) : "";
+}
+window.serializeDriveLinkEditor = serializeDriveLinkEditor;
+window.populateDriveLinkEditor = populateDriveLinkEditor;

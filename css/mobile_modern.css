@@ -2093,6 +2093,132 @@
         color: #fff !important;
         border-radius: 14px !important;
     }
+
+    .frosted-blue {
+        background: rgba(59, 130, 246, 0.1) !important;
+        color: #3b82f6 !important;
+    }
+
+    /* --- Full Screen Mobile Form for Exams --- */
+    #adminPanelModal .hub-modal {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        padding: 20px !important;
+        overflow-y: auto !important;
+        background: #fdfaf5 !important;
+        color: #1a1a1a !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #adminPanelModal .hub-modal .p-8 {
+        padding: 20px 10px !important;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    #adminPanelModal .form-header {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        margin-bottom: 30px !important;
+    }
+
+    #adminPanelModal #adminModalTitle {
+        color: #1a1a1a !important;
+        font-size: 24px !important;
+        letter-spacing: -1px !important;
+        margin: 0 !important;
+        font-style: normal !important;
+        font-weight: 950 !important;
+        flex-grow: 1 !important;
+    }
+
+    #adminPanelModal .admin-input, 
+    #adminPanelModal .admin-textarea {
+        background: #fff !important;
+        border: 2px solid rgba(0,0,0,0.05) !important;
+        color: #1a1a1a !important;
+        padding: 18px !important;
+        border-radius: 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+    }
+    
+    #adminPanelModal .admin-input:focus, 
+    #adminPanelModal .admin-textarea:focus {
+        border-color: #c49673 !important;
+    }
+
+    #adminPanelModal .modal-label {
+        color: #a69076 !important;
+        font-size: 10px !important;
+        font-weight: 950 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        margin-left: 5px !important;
+        margin-bottom: 8px !important;
+    }
+
+    #adminPanelModal .form-mode-selector {
+        background: #f1ede6 !important;
+        border-radius: 18px !important;
+        margin-bottom: 30px !important;
+        height: 50px !important;
+    }
+
+    #adminPanelModal .mode-toggle-btn {
+        color: #a69076 !important;
+        font-weight: 850 !important;
+        font-size: 11px !important;
+    }
+
+    #adminPanelModal .mode-toggle-btn.active {
+        color: #413225 !important;
+    }
+
+    #adminPanelModal .mode-glider {
+        background: #fff !important;
+        border-radius: 14px !important;
+    }
+
+    #adminPanelModal .admin-submit-btn {
+        height: 65px !important;
+        border-radius: 25px !important;
+        font-size: 16px !important;
+        font-weight: 950 !important;
+        letter-spacing: normal !important;
+        transition: all 0.3s ease !important;
+    }
+
+    #adminPanelModal .admin-submit-btn[type="submit"] {
+        background: #000 !important;
+        color: #fff !important;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+    }
+
+    #adminPanelModal .admin-submit-btn:not([type="submit"]) {
+        background: rgba(0,0,0,0.05) !important;
+        color: #666 !important;
+    }
+
+    #adminPanelModal #detailedExamSection .grid-cols-2 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+    }
+    
+    #mobileDriveNotesList .mobile-action-link {
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        justify-content: flex-start !important;
+        padding-left: 20px !important;
+        font-weight: 850 !important;
+    }
 }
 
 

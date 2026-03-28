@@ -550,15 +550,21 @@ function updateMobileHeroCard() {
     }
 
     // Check for homework
-    if (hwStatus && hwStatus.style.display !== 'none') {
+    if (hwStatus) {
         const hasHw = window.homeworkList && window.homeworkList.some(hw =>
             hw.subject && heroLesson.lesson && hw.subject.toLowerCase().includes(heroLesson.lesson.toLowerCase())
         );
-        hwStatus.innerHTML = hasHw ? '🔥 ÖDEV VAR' : '✨ Ödev Yok';
-        hwStatus.style.background = hasHw ? 'rgba(231, 76, 60, 0.1)' : 'rgba(46, 204, 113, 0.1)';
-        hwStatus.style.color = hasHw ? '#e74c3c' : '#2ecc71';
-        hwStatus.style.padding = '6px 12px';
-        hwStatus.style.borderRadius = '12px';
+        
+        if (hasHw) {
+            hwStatus.innerHTML = '🔥 ÖDEV VAR';
+            hwStatus.style.display = 'block';
+            hwStatus.style.background = 'rgba(231, 76, 60, 0.1)';
+            hwStatus.style.color = '#e74c3c';
+            hwStatus.style.padding = '6px 12px';
+            hwStatus.style.borderRadius = '12px';
+        } else {
+            hwStatus.style.display = 'none';
+        }
     }
 }
 

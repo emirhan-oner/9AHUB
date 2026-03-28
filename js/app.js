@@ -290,6 +290,11 @@ function showPage(pageName) {
         if (yemekhanePage) yemekhanePage.classList.add('active');
         if (navYemekhane) navYemekhane.classList.add('active');
         if (typeof initYemekhane === 'function') initYemekhane();
+    } else if (pageName === 'library') {
+        const libraryPage = document.getElementById('libraryPage');
+        const navLibrary = document.getElementById('nav-library');
+        if (libraryPage) libraryPage.classList.add('active');
+        if (navLibrary) navLibrary.classList.add('active');
     }
 }
 
@@ -710,11 +715,11 @@ function toggleAdminPanel() {
     }
 }
 
-function verifyAdminPassword() {
+function verifyAdminLogin() {
     const pass = document.getElementById('adminPasswordInput').value;
     if (pass === '829615') {
         isAdmin = true;
-        closeAdminModal();
+        closeAdminLoginModal();
         document.getElementById('addReminderBtn').classList.remove('hidden');
         renderReminders();
     } else {
@@ -722,7 +727,7 @@ function verifyAdminPassword() {
     }
 }
 
-function closeAdminModal() {
+function closeAdminLoginModal() {
     document.getElementById('adminLoginModal').style.display = 'none';
 }
 

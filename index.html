@@ -170,6 +170,7 @@
                 <a onclick="showPage('obs')" id="nav-obs">ÖBS</a>
                 <a onclick="showPage('calendar')" id="nav-calendar">Takvim</a>
                 <a onclick="showPage('yemekhane')" id="nav-yemekhane">Yemekhane</a>
+                <a onclick="window.open('https://notebooklm.google.com/notebook/308134fa-67dd-4bed-aa6a-5cb6c8eec999', '_blank')" id="nav-library">Kütüphane</a>
             </nav>
         </div>
     </header>
@@ -283,6 +284,7 @@
                     <a onclick="showPage('obs')">ÖBS</a>
                     <a onclick="showPage('calendar')">Takvim</a>
                     <a onclick="showPage('yemekhane')">Yemekhane</a>
+                    <a onclick="window.open('https://notebooklm.google.com/notebook/308134fa-67dd-4bed-aa6a-5cb6c8eec999', '_blank')">Kütüphane</a>
                 </div>
             </div>
 
@@ -473,7 +475,7 @@
     <!-- Admin Login Modal -->
     <!-- Admin Login Modal -->
     <div id="adminLoginModal" class="reminders-modal" style="display: none;">
-        <div class="modal-backdrop" onclick="closeAdminModal()"></div>
+        <div class="modal-backdrop" onclick="closeAdminLoginModal()"></div>
         <div class="modal-container animate-fade-in" style="padding: 40px 30px; border-radius: 40px; border: 1px solid rgba(166,144,118,0.15); box-shadow: 0 40px 80px rgba(0,0,0,0.1); text-align: center;">
             <div class="modal-header" style="display: flex; flex-direction: column; align-items: center;">
                 <div style="width: 70px; height: 70px; background: rgba(166,144,118,0.1); border-radius: 25px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
@@ -505,8 +507,8 @@
                 </div>
             </div>
             <div class="modal-footer" style="display: flex; gap: 15px; margin-top: 30px;">
-                <button class="modal-btn-cancel" onclick="closeAdminModal()" style="flex: 1; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 850; background: #f1ede6; color: #a69076; border: none;">Vazgeç</button>
-                <button class="modal-btn-confirm" onclick="verifyAdminPassword()" style="flex: 1; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 850; background: #a69076; color: #fff; border: none; box-shadow: 0 10px 25px rgba(166,144,118,0.3);">Giriş Yap</button>
+                <button class="modal-btn-cancel" onclick="closeAdminLoginModal()" style="flex: 1; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 850; background: #f1ede6; color: #a69076; border: none;">Vazgeç</button>
+                <button class="modal-btn-confirm" onclick="verifyAdminLogin()" style="flex: 1; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 850; background: #a69076; color: #fff; border: none; box-shadow: 0 10px 25px rgba(166,144,118,0.3);">Giriş Yap</button>
             </div>
         </div>
     </div>
@@ -1531,6 +1533,14 @@
                     </a>
                 </div>
 
+                <!-- Drive Notes Section -->
+                <div id="mobileDriveNotesSection" class="hidden" style="margin-top: 25px;">
+                    <label style="display: block; font-size: 10px; font-weight: 950; color: #3b82f6; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">Çalışma Notları (Drive)</label>
+                    <div id="mobileDriveNotesList" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Drive links will be injected here -->
+                    </div>
+                </div>
+
                 <!-- Teacher Note Box -->
                 <div id="mobileTeacherNoteSection" class="hidden" style="margin-top: 25px;">
                     <label style="display: block; font-size: 10px; font-weight: 950; color: #d35400; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">Hoca Notu</label>
@@ -1680,7 +1690,11 @@
     <div id="adminPanelModal" class="modal-overlay" onclick="if(event.target === this) closeAdminModal()">
         <div class="hub-modal animate-fade" style="max-width: 600px;">
             <div class="p-8" style="padding: 2.5rem;">
-                <div class="form-header">
+                <div class="form-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                    <button type="button" onclick="closeAdminModal()" class="mobile-only" 
+                        style="background: #f1ede6; border: none; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #413225; cursor: pointer;">
+                        <i data-lucide="chevron-left" style="width: 24px; height: 24px;"></i>
+                    </button>
                     <h2 id="adminModalTitle"
                         style="margin: 0; color: #fff; font-weight: 900; text-transform: uppercase; font-size: 1.25rem; font-style: italic;">
                         YENİ YAZILI EKLE</h2>
@@ -1792,11 +1806,26 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-2 mb-10"
-                            style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2.5rem;">
+                        <div class="flex flex-col gap-2 mb-6"
+                            style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
                             <label class="modal-label">HOCA NOTLARI / HATIRLATICILAR</label>
                             <textarea id="newExamTeacherNotes" placeholder="Buraya önemli notları ekleyin..."
                                 class="admin-textarea"></textarea>
+                        </div>
+
+                        <!-- Modular Drive Links Manager -->
+                        <div class="flex flex-col gap-2 mb-10" style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2.5rem;">
+                            <label class="modal-label">MODÜLER DRIVE NOTLARI</label>
+                            
+                            <div id="driveLinksContainer" style="display: flex; flex-direction: column; gap: 15px;">
+                                <!-- Dynamic categories will be injected here -->
+                            </div>
+                            
+                            <button type="button" onclick="addDriveCategory()" class="admin-submit-btn" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; margin-top: 10px; font-size: 12px; height: 50px;">
+                                <i data-lucide="folder-plus"></i> YENİ KATEGORİ EKLE
+                            </button>
+                            
+                            <input type="hidden" id="newExamDriveLinks"> <!-- Kept for sync logic -->
                         </div>
                     </div>
 
@@ -2042,6 +2071,58 @@
             </div>
             <div class="mobile-yemek-content" id="mobileYemekList">
                 <!-- JS injects here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Library (Kütüphane) Page -->
+    <div id="libraryPage" class="page" style="display: none;">
+        <!-- Desktop Library -->
+        <div class="desktop-only">
+            <div style="padding: 60px; max-width: 1200px; margin: 0 auto; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+                <div class="library-promo-card animate-fade-in" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 40px; padding: 60px; text-align: center; max-width: 600px; box-shadow: 0 40px 100px rgba(0,0,0,0.2);">
+                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);">
+                        <i data-lucide="library" style="width: 48px; height: 48px; color: #fff;"></i>
+                    </div>
+                    <h1 style="color: #fff; font-size: 42px; font-weight: 950; margin-bottom: 20px; letter-spacing: -2px;">9A DİJİTAL KÜTÜPHANE</h1>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 18px; font-weight: 600; line-height: 1.6; margin-bottom: 40px;">Aradığın her şey burada! NotebookLM destekli yapay zeka kütüphanemizde kitap sorgula, kaynak ara ve notlara ulaş.</p>
+                    <a href="https://notebooklm.google.com/notebook/308134fa-67dd-4bed-aa6a-5cb6c8eec999" target="_blank" style="display: inline-flex; align-items: center; gap: 12px; background: #fff; color: #000; padding: 20px 40px; border-radius: 20px; font-weight: 800; font-size: 18px; text-decoration: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 40px rgba(255,255,255,0.1);">
+                        KÜTÜPHANEYİ AÇ <i data-lucide="external-link" style="width: 20px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Library -->
+        <div class="mobile-only">
+            <div class="mobile-header">
+                <div class="mobile-header-top">
+                    <button class="mobile-icon-back-btn" onclick="showPage('home')">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <h1>Kütüphane</h1>
+                </div>
+            </div>
+            <div style="padding: 25px;">
+                <div class="mobile-library-card animate-fade-in" style="background: #fff; border-radius: 35px; padding: 40px 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.02); margin-top: 20px;">
+                    <div style="width: 80px; height: 80px; background: #fdfaf5; border-radius: 25px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+                        <i data-lucide="book-open-check" style="width: 36px; height: 36px; color: #413225;"></i>
+                    </div>
+                    <h2 style="color: #413225; font-size: 28px; font-weight: 950; margin-bottom: 15px; letter-spacing: -1px;">NotebookLM Kütüphanesi</h2>
+                    <p style="color: #a69076; font-size: 15px; font-weight: 700; line-height: 1.6; margin-bottom: 30px;">Kütüphanede aradığın kitabın olup olmadığını hemen sorgula.</p>
+                    
+                    <a href="https://notebooklm.google.com/notebook/308134fa-67dd-4bed-aa6a-5cb6c8eec999" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #413225; color: #fff; padding: 20px; border-radius: 20px; font-weight: 900; font-size: 16px; text-decoration: none; box-shadow: 0 15px 30px rgba(65, 50, 37, 0.2);">
+                        KÜTÜPHANEYE GİT <i data-lucide="chevron-right" style="width: 20px;"></i>
+                    </a>
+                </div>
+
+                <div style="margin-top: 30px; background: rgba(65, 50, 37, 0.03); border-radius: 25px; padding: 25px; border: 1px dashed rgba(65, 50, 37, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <i data-lucide="info" style="width: 20px; color: #a69076;"></i>
+                        <span style="font-size: 11px; font-weight: 900; color: #a69076; text-transform: uppercase; letter-spacing: 1px;">NASIL KULLANILIR?</span>
+                    </div>
+                    <p style="font-size: 13px; color: #413225; font-weight: 700; line-height: 1.5; margin: 0;">Bağlantıya tıkladıktan sonra açılan NotebookLM panelinde kütüphane envanterini sesli veya yazılı olarak sorgulayabilirsin.</p>
+                </div>
             </div>
         </div>
     </div>
