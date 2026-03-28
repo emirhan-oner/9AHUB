@@ -38,7 +38,7 @@ const ExamsSync = {
                 scenarioLink: item.scenario_link,
                 mebSampleLink: item.meb_sample_link,
                 teacherNotes: item.teacher_notes,
-                driveLinks: item.drive_links || '',
+                driveLinks: item.drive_links || item.driveLinks || '',
                 category: '-' // Deprecated
             }));
 

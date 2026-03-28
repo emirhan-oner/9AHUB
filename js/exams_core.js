@@ -397,31 +397,20 @@ window.openExamModal = function(id) {
                     }
                     
                     if (groups.length > 0) {
-                        document.getElementById('mobileDriveNotesSection').classList.remove('hidden');
+                        // In detail view, we stack them as blue action buttons
                         groups.forEach(group => {
                             if (group.links && group.links.length > 0) {
-                                // Add Category Header
-                                if (group.category) {
-                                    const header = document.createElement('div');
-                                    header.style.cssText = 'font-size: 11px; font-weight: 900; color: #413225; opacity: 0.6; text-transform: uppercase; margin-top: 15px; margin-bottom: 5px;';
-                                    header.innerText = group.category;
-                                    driveNotesContainer.appendChild(header);
-                                }
-                                
-                                // Add Links in that category
                                 group.links.forEach(link => {
                                     const btn = document.createElement('a');
                                     btn.href = link.url;
                                     btn.target = '_blank';
                                     btn.className = 'mobile-action-link frosted-blue';
-                                    btn.style.marginTop = '8px';
-                                    btn.innerHTML = `<i data-lucide="external-link" style="width: 16px; height: 16px;"></i> ${link.title}`;
+                                    // Use same style as MEB/Scenario buttons (icon on left)
+                                    btn.innerHTML = `<i data-lucide="external-link" style="width: 18px; height: 18px;"></i> ${link.title}`;
                                     driveNotesContainer.appendChild(btn);
                                 });
                             }
                         });
-                    } else {
-                        document.getElementById('mobileDriveNotesSection').classList.add('hidden');
                     }
                 }
 
