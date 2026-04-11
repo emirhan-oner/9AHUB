@@ -1,36 +1,26 @@
 let yemekMenu = [
-    {
-        date: "24.03.2026",
-        day: "Salı",
-        soup: "EZOGELİN ÇORBASI",
-        main: "TAVUK SOTE",
-        side: "PİRİNÇ PİLAVI",
-        dessert: "AYRAN"
-    },
-    {
-        date: "25.03.2026",
-        day: "Çarşamba",
-        soup: "DOMATES ÇORBASI",
-        main: "İZMİR KÖFTE",
-        side: "MAKARNA",
-        dessert: "MEYVE"
-    },
-    {
-        date: "26.03.2026",
-        day: "Perşembe",
-        soup: "YAYLA ÇORBASI",
-        main: "MANİSA KEBAP",
-        side: "BULGUR PİLAVI",
-        dessert: "YOĞURT"
-    },
-    {
-        date: "27.03.2026",
-        day: "Cuma",
-        soup: "MERCİMEK ÇORBASI",
-        main: "TAVUK DÖNER",
-        side: "PİRİNÇ PİLAVI",
-        dessert: "AYRAN"
-    }
+    { date: "01.04.2026", day: "Çarşamba", soup: "EZOGELİN ÇORBA", main: "CIZBIZ KÖFTE+SALATA", side: "PİRİNÇ PİLAVI", dessert: "AYRAN" },
+    { date: "02.04.2026", day: "Perşembe", soup: "MERCİMEK ÇORBASI", main: "TAVUK ÇİFTLİK KEBAP", side: "MAKARNA", dessert: "ISLAK KEK" },
+    { date: "03.04.2026", day: "Cuma", soup: "TARHANA ÇORBASI", main: "KIY. MANTI MAKARNA", side: "PATATES SALATASI", dessert: "SUPANGLE" },
+    { date: "06.04.2026", day: "Pazartesi", soup: "EZOGELİN ÇORBA", main: "ETLİ KURU FASULYE", side: "PİRİNÇ PİLAVI", dessert: "KARIŞIK TURŞU" },
+    { date: "07.04.2026", day: "Salı", soup: "MERCİMEK ÇORBASI", main: "EKŞİLİ KÖFTE", side: "BULGUR PİLAVI", dessert: "MEYVE SUYU" },
+    { date: "08.04.2026", day: "Çarşamba", soup: "DOMATES ÇORBASI", main: "ÇITIRTI KEBAP", side: "MAKARNA", dessert: "MEYVE SUYU" },
+    { date: "09.04.2026", day: "Perşembe", soup: "YAYLA ÇORBASI", main: "İZMİR KÖFTE", side: "BULGUR PİLAVI", dessert: "AYRAN" },
+    { date: "10.04.2026", day: "Cuma", soup: "MERCİMEK ÇORBASI", main: "ETLİ BEZELYE", side: "PİRİNÇ PİLAVI", dessert: "TULUMBA TATLISI" },
+    { date: "13.04.2026", day: "Pazartesi", soup: "MERCİMEK ÇORBASI", main: "ETLİ MANTI", side: "KISIR", dessert: "SUPANGLE" },
+    { date: "14.04.2026", day: "Salı", soup: "EZOGELİN ÇORBA", main: "FIRIN TAVUK PİRZOLA", side: "MAKARNA", dessert: "MEYVE SUYU" },
+    { date: "15.04.2026", day: "Çarşamba", soup: "DOMATES ÇORBASI", main: "YOĞ.SOS ISPANAK", side: "DİLİM PİZZA", dessert: "TREMİSU" },
+    { date: "16.04.2026", day: "Perşembe", soup: "YAYLA ÇORBASI", main: "TAVUK ŞİNİZTEL", side: "PATATESLİ BÖREK", dessert: "İÇECEK" },
+    { date: "17.04.2026", day: "Cuma", soup: "MERCİMEK ÇORBASI", main: "SOSİS TAVA&SEBZE", side: "SPAGETTİ", dessert: "YAŞ PASTA" },
+    { date: "20.04.2026", day: "Pazartesi", soup: "EZOGELİN ÇORBA", main: "ETLİ NOHUT", side: "PİRİNÇ PİLAVI", dessert: "YOĞURT" },
+    { date: "21.04.2026", day: "Salı", soup: "TARHANA ÇORBASI", main: "DÜRÜM TAVUK ŞİŞ", side: "MAKARNA", dessert: "MEYVE SUYU" },
+    { date: "22.04.2026", day: "Çarşamba", soup: "SEBZE ÇORBASI", main: "HASAN PAŞA KÖFTE", side: "BULGUR PİLAVI", dessert: "AYRAN" },
+    { date: "23.04.2026", day: "Perşembe", soup: "", main: "İYİ BAYRAMLAR", side: "", dessert: "" },
+    { date: "24.04.2026", day: "Cuma", soup: "MERCİMEK ÇORBASI", main: "KIY. MANTI MAKARNA", side: "PATATES SALATASI", dessert: "SUPANGLE" },
+    { date: "27.04.2026", day: "Pazartesi", soup: "TARHANA ÇORBASI", main: "KADINBUDU KÖFTE", side: "PATATESLİ BÖREK", dessert: "İÇECEK" },
+    { date: "28.04.2026", day: "Salı", soup: "EZOGELİN ÇORBA", main: "ETLİ KURU FASULYE", side: "PİRİNÇ PİLAVI", dessert: "CACIK" },
+    { date: "29.04.2026", day: "Çarşamba", soup: "DOMATES ÇORBASI", main: "SALÇALI KÖFTE", side: "BULGUR PİLAVI", dessert: "AYRAN" },
+    { date: "30.04.2026", day: "Perşembe", soup: "YAYLA ÇORBASI", main: "KARNIYARIK", side: "PİRİNÇ PİLAVI", dessert: "YOĞURT" }
 ];
 
 function initYemekhane() {

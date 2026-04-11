@@ -419,7 +419,7 @@ const CalendarApp = {
                             <h4 style="margin:0 0 4px 0; font-size:15px; color:#413225; font-weight:850;">${e.title}</h4>
                             <span style="font-size:12px; color:#a69076; font-weight:700;">${e.description || e.type.toUpperCase()}</span>
                         </div>
-                        <button onclick="CalendarApp.showAiExplanation('${e.title}')" style="background:rgba(147, 51, 234, 0.1); color:#9333ea; border:none; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                        <button onclick="CalendarApp.showAiExplanation('${e.title}')" style="background:rgba(196, 150, 115, 0.1); color:#c49673; border:none; width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
                             <i data-lucide="sparkles" style="width:18px; height:18px;"></i>
                         </button>
                     </div>

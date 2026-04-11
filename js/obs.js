@@ -197,11 +197,16 @@ function getTeacherImgUrl(teacherId) {
     return `https://znrlvhbuzmukznnfxpjy.supabase.co/storage/v1/object/public/hub_files/teacher_profiles/${teacherId}.jpg`;
 }
 
-function initOBS() {
+function renderTeachers(query = '') {
     const grid = document.getElementById('teacherGrid');
     if (!grid) return;
 
-    grid.innerHTML = teacherData.map(teacher => `
+    const filtered = teacherData.filter(t => 
+        t.name.toLowerCase().includes(query.toLowerCase()) || 
+        t.subject.toLowerCase().includes(query.toLowerCase())
+    );
+
+    grid.innerHTML = filtered.map(teacher => `
         <div class="teacher-card animate-fade-in" onclick="openTeacherDetail('${teacher.id}')">
             <div class="teacher-profile-img">
                 <img id="grid-img-${teacher.id}" src="${getTeacherImgUrl(teacher.id)}" onerror="this.onerror=null; this.src='${teacher.image}';" alt="${teacher.name}">
@@ -217,6 +222,17 @@ function initOBS() {
     `).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+function initOBS() {
+    renderTeachers('');
+}
+
+function filterTeachers() {
+    const input = document.getElementById('obsTeacherSearch');
+    if(input) {
+        renderTeachers(input.value);
+    }
 }
 
 function openTeacherDetail(id) {
@@ -299,6 +315,7 @@ function closeTeacherDetail() {
 window.initOBS = initOBS;
 window.openTeacherDetail = openTeacherDetail;
 window.closeTeacherDetail = closeTeacherDetail;
+window.filterTeachers = filterTeachers;
 
 window.uploadTeacherImage = async function(event, teacherId) {
     const file = event.target.files[0];

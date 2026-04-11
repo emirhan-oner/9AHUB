@@ -3,6 +3,72 @@ let currentDay = '';
 let currentLessonIndex = 0;
 let realTimeCheckInterval;
 let currentMobileTimelineDay = '';
+let _lessonAutoOpenLog = { date: '', openedSlots: [] };
+
+const LESSON_LINKS = {
+    "edebiyat": {
+        autoOpen: "https://drive.google.com/file/d/14HJcyF3R_GAyq8InkpPMbD-aLYuJgjZC/view?usp=sharing",
+        firstOnly: true,
+        links: [
+            { label: "TDK SÖZLÜK", url: "https://sozluk.gov.tr/", icon: "book" },
+            { label: "KİTABA GİT", url: "https://drive.google.com/file/d/14HJcyF3R_GAyq8InkpPMbD-aLYuJgjZC/view?usp=sharing", icon: "external-link" }
+        ]
+    },
+    "almanca": {
+        autoOpen: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/almanca?s=2&d=2&u=0&k=0",
+        links: [
+            { label: "KİTABA GİT", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/almanca?s=2&d=2&u=0&k=0", icon: "book-open" }
+        ]
+    },
+    "matematik": {
+        links: [
+            { label: "OGM MATERYAL", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/matematik-9", icon: "calculator" },
+            { label: "GEOGEBRA", url: "https://www.geogebra.org/graphing", icon: "activity" }
+        ]
+    },
+    "ingilizce": {
+        links: [
+            { label: "OXFORD DICT", url: "https://www.oxfordlearnersdictionaries.com/", icon: "languages" },
+            { label: "BOOKSHELF", url: "https://www.oxfordlearnersbookshelf.com/", icon: "library" },
+            { label: "OGM KİTAP", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/ingilizce-9", icon: "book-open" }
+        ]
+    },
+    "biyoloji": {
+        links: [
+            { label: "KİTABA GİT", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/biyoloji-9", icon: "dna" }
+        ]
+    },
+    "kimya": {
+        links: [
+            { label: "PERİYODİK TABLO", url: "https://ptable.com/?lang=tr", icon: "flask-conical" },
+            { label: "KİTABA GİT", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/kimya-9", icon: "book-open" }
+        ]
+    },
+    "fizik": {
+        links: [
+            { label: "PHET SİMÜLASYON", url: "https://phet.colorado.edu/tr/", icon: "atom" },
+            { label: "KİTABA GİT", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/fizik-9", icon: "book-open" }
+        ]
+    },
+    "tarih": {
+        links: [
+            { label: "OGM TARİH", url: "https://ogmmateryal.eba.gov.tr/etkilesimli-kitap/tarih-9", icon: "landmark" }
+        ]
+    },
+    "coğrafya": {
+        autoOpen: "https://drive.google.com/file/d/1BZ2McwOdaKsd_S8mtKPbWW76Po_Ok3-W/view?usp=sharing",
+        links: [
+            { label: "GOOGLE EARTH", url: "https://earth.google.com/web/", icon: "globe" },
+            { label: "KİTABA GİT", url: "https://drive.google.com/file/d/1BZ2McwOdaKsd_S8mtKPbWW76Po_Ok3-W/view?usp=sharing", icon: "map" }
+        ]
+    },
+    "din": {
+        autoOpen: "https://drive.google.com/file/d/1FKCKLGxs8RupJwglBgh2C1WXHc3aDmRE/view?usp=sharing",
+        links: [
+            { label: "KİTABA GİT", url: "https://drive.google.com/file/d/1FKCKLGxs8RupJwglBgh2C1WXHc3aDmRE/view?usp=sharing", icon: "book" }
+        ]
+    }
+};
 
 function shortenLessonName(name) {
     if (!name) return "";
@@ -184,6 +250,103 @@ function checkAndUpdateLesson() {
     } else {
         updateCarousel();
     }
+
+    updateDynamicLessonWidget();
+}
+
+function updateDynamicLessonWidget() {
+    const container = document.getElementById('dynamicLessonWidget');
+    const parent = document.querySelector('.hero-stats-row');
+    if (!container) return;
+
+    const today = getTodayDayName();
+    const lessons = scheduleData[today];
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const dateKey = now.toISOString().split('T')[0];
+
+    // Reset log if new day
+    if (_lessonAutoOpenLog.date !== dateKey) {
+        _lessonAutoOpenLog = { date: dateKey, openedSlots: [] };
+    }
+    let activeLesson = null;
+    let lessonIndex = -1;
+
+    if (lessons) {
+        for (let i = 0; i < lessons.length; i++) {
+            const [start, end] = lessons[i].time.split(' - ');
+            if (currentMinutes >= parseTimeToMinutes(start) && currentMinutes < parseTimeToMinutes(end)) {
+                activeLesson = lessons[i];
+                lessonIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (!activeLesson) {
+        if (parent) parent.classList.remove('has-lesson');
+        container.innerHTML = '';
+        return;
+    }
+
+    if (parent) parent.classList.add('has-lesson');
+
+    const lessonNameLower = activeLesson.lesson.toLowerCase();
+    let matchedKey = null;
+    for (const key in LESSON_LINKS) {
+        if (lessonNameLower.includes(key)) {
+            matchedKey = key;
+            break;
+        }
+    }
+
+    const config = matchedKey ? LESSON_LINKS[matchedKey] : null;
+    const slotKey = `${today}-${lessonIndex}-${activeLesson.lesson}`;
+
+    // Handle Auto Open
+    if (config && config.autoOpen && !_lessonAutoOpenLog.openedSlots.includes(slotKey)) {
+        let shouldOpen = true;
+
+        if (config.firstOnly) {
+            // Check if this is the first occurrence of this subject today
+            const firstIndex = lessons.findIndex(l => l.lesson.toLowerCase().includes(matchedKey));
+            if (firstIndex !== lessonIndex) {
+                 shouldOpen = false;
+                 // But mark it opened so we don't check again for this slot
+                 _lessonAutoOpenLog.openedSlots.push(slotKey);
+            }
+        }
+
+        if (shouldOpen) {
+            window.open(config.autoOpen, '_blank');
+            _lessonAutoOpenLog.openedSlots.push(slotKey);
+        }
+    }
+
+    // Build UI
+    let linksHtml = '';
+    if (config && config.links) {
+        linksHtml = `
+            <div class="lesson-quick-links">
+                ${config.links.map(link => `
+                    <a href="${link.url}" target="_blank" class="lesson-link-btn">
+                        <i data-lucide="${link.icon}" style="width:14px;height:14px;"></i>
+                        ${link.label}
+                    </a>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    container.innerHTML = `
+        <div class="lesson-live-badge">
+            <span class="indicator"></span>
+            ${shortenLessonName(activeLesson.lesson).toUpperCase()}
+        </div>
+        ${linksHtml}
+    `;
+
+    if (window.lucide) lucide.createIcons();
 }
 
 let currentMobileView = 'today';
@@ -292,6 +455,7 @@ function selectDay(day) {
         updateCarousel();
     }
 
+    updateDynamicLessonWidget();
     startRealTimeCheck();
 }
 

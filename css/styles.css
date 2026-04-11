@@ -7,25 +7,28 @@
 /* .container removed */
 
 :root {
-    --bg-dark: #020202;
-    --accent-glow: radial-gradient(circle at 50% 50%, rgba(15, 15, 20, 1) 0%, rgba(2, 2, 2, 1) 100%);
-    --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --glass-blur: blur(40px);
-    --pill-active: #ffffff;
-    --pill-text-active: #000000;
+    --bg-dark: #fdfaf5; /* Switched to Modern Light */
+    --accent-glow: radial-gradient(circle at 50% 50%, rgba(209, 166, 132, 0.08) 0%, rgba(253, 250, 245, 1) 100%);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --glass-blur: blur(20px);
+    --pill-active: #413225;
+    --pill-text-active: #ffffff;
+    --accent-primary: #c49673;
+    --text-main: #1a1a1a;
+    --text-muted: #a69076;
 }
 
 body {
     font-family: 'Inter', 'Segoe UI', sans-serif;
     background-color: var(--bg-dark);
-    color: #fff;
+    color: var(--text-main);
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
 }
 
-/* Global Background Patterns - Smaller, tighter dots */
+/* Global Background Patterns - Light Mode Dots */
 body::before {
     content: "";
     position: fixed;
@@ -33,8 +36,8 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-    background-size: 30px 30px;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
     z-index: -1;
     pointer-events: none;
 }
@@ -46,9 +49,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
-        var(--accent-glow);
+    background: var(--accent-glow);
     z-index: -2;
     pointer-events: none;
 }
@@ -103,52 +104,52 @@ header {
 }
 
 .logo {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: 2px;
+    font-size: 26px;
+    font-weight: 950;
+    letter-spacing: -0.5px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(to bottom, #fff, #888);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #121212;
+    transition: transform 0.3s;
+}
+
+.logo:hover {
+    transform: scale(1.02);
 }
 
 nav {
     display: flex;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 5px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(40px);
+    gap: 8px;
+    background: #f1ede6;
+    padding: 6px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 nav a {
-    color: rgba(255, 255, 255, 0.4);
+    color: #a69076;
     text-decoration: none;
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 11px;
+    font-weight: 850;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.2, 1, 0.2, 1);
     cursor: pointer;
-    padding: 10px 22px;
-    border-radius: 50px;
+    padding: 12px 24px;
+    border-radius: 16px;
     border: none;
     background: transparent;
-    font-family: 'Inter', sans-serif;
 }
 
 nav a:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.05);
+    color: #413225;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 nav a.active {
-    background: var(--pill-active);
-    color: var(--pill-text-active);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    color: #413225;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
 }
 
 /* Hide Redundant Headers for UI Unification */
@@ -172,34 +173,31 @@ header.homework-header.desktop-only {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background: rgba(15, 15, 15, 0.4);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    background: #ffffff;
     border-radius: 24px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
 }
 
 .schedule-table th {
-    background: rgba(255, 255, 255, 0.03);
+    background: #f8f5f0;
     padding: 24px 25px;
     text-align: left;
-    font-weight: 800;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    font-weight: 900;
+    font-size: 12px;
+    color: #a69076;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .schedule-table td {
     padding: 20px 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.02);
     font-size: 15px;
-    font-weight: 500;
-    color: #d1d5db;
+    font-weight: 700;
+    color: #413225;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -213,24 +211,22 @@ header.homework-header.desktop-only {
 }
 
 .schedule-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: inset 4px 0 0 #fff;
+    background: #fdfaf5;
+    box-shadow: inset 4px 0 0 #c49673;
 }
 
 .schedule-table tbody tr:hover td {
-    color: #fff;
+    color: #121212;
     transform: translateX(5px);
 }
 
 #desktopScheduleControls h2 {
     font-size: 32px !important;
-    font-weight: 900 !important;
-    letter-spacing: 3px !important;
-    background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    font-weight: 950 !important;
+    letter-spacing: -1px !important;
+    color: #121212 !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
 }
 
 .hero {
@@ -242,65 +238,109 @@ header.homework-header.desktop-only {
 }
 
 .search-container {
-    max-width: 800px;
+    max-width: 850px;
     width: 100%;
     margin: 0 auto 50px;
     position: relative;
-    animation: slideUp 0.8s ease forwards;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 4px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0,0,0,0.01);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 100;
 }
 
 .search-box {
-    width: 100%;
-    padding: 22px 55px 22px 35px;
-    border: 3px solid #ffffff;
-    border-radius: 40px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(40px);
-    color: #fff;
+    flex: 1;
+    padding: 18px 25px 18px 35px;
+    border: none;
+    background: transparent;
+    color: #1a1a1a;
     font-size: 18px;
     font-weight: 700;
     outline: none;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    cursor: text;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .search-box::placeholder {
-    color: rgba(255, 255, 255, 0.2);
+    color: #a69076;
+    opacity: 0.6;
 }
 
 .search-box:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #ffffff;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    background: #ffffff;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
 }
 
-.search-icon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.5);
-    pointer-events: none;
+.search-icon-btn {
+    background: transparent;
+    border: none;
+    color: #a69076;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.search-icon-btn i {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.5;
+}
+
+.hub-filter-btn {
+    background: #f1ede6;
+    color: #a69076;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.hub-filter-btn.active {
+    background: #c49673 !important;
+    color: #fff !important;
+    box-shadow: 0 8px 15px rgba(196, 150, 115, 0.2) !important;
+}
+
+.hub-filter-btn:hover:not(.active) {
+    background: #e9e4dc;
 }
 
 .shortcuts-trigger {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 45px;
-    height: 45px;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f1ede6;
+    border: none;
+    color: #a69076;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 5;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    flex-shrink: 0;
+    margin-right: 4px;
+}
+
+.shortcuts-trigger i {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5;
+}
+
+.shortcuts-trigger:hover {
+    background: #a69076;
+    color: #fff;
+    transform: scale(1.05);
 }
 
 .shortcuts-trigger:hover {
@@ -325,45 +365,44 @@ header.homework-header.desktop-only {
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.clock-display {
-    text-align: right;
+.weather-widget {
+    background: #ffffff;
+    padding: 20px 40px;
+    border-radius: 35px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
 }
 
 .clock-display .time {
     font-size: clamp(60px, 7vw, 76px);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1;
     margin-bottom: 5px;
-    letter-spacing: -2px;
+    letter-spacing: -3px;
+    color: #121212;
 }
 
 .clock-display .date {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 500;
+    color: #a69076;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .hero-divider {
     width: 1px;
     height: 60px;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.weather-widget {
-    background: rgba(255, 255, 255, 0.03);
-    padding: 20px 40px;
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .weather-icon i {
     width: 48px;
     height: 48px;
-    color: #fff;
+    color: #c49673;
 }
 
 .weather-info {
@@ -374,16 +413,17 @@ header.homework-header.desktop-only {
 
 .weather-info .temp {
     font-size: 52px;
-    font-weight: 500;
+    font-weight: 800;
     line-height: 1;
+    color: #121212;
 }
 
 .weather-info .condition {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 600;
+    font-size: 11px;
+    color: #a69076;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 /* Day Selector */
@@ -396,29 +436,31 @@ header.homework-header.desktop-only {
 
 .day-selector {
     display: flex;
-    background: rgba(255, 255, 255, 0.02);
+    background: #f1ede6;
     padding: 6px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
     gap: 5px;
 }
 
 .day-btn {
-    padding: 10px 24px;
+    padding: 12px 28px;
     background: transparent;
     border: none;
-    border-radius: 50px;
-    color: rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    color: #a69076;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     transition: all 0.3s;
 }
 
 .day-btn.active {
     background: #fff;
-    color: #000;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    color: #413225;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .schedule-viewer {
@@ -454,9 +496,8 @@ header.homework-header.desktop-only {
     height: 240px;
     padding: 30px;
     border-radius: 40px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.02);
     transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     text-align: center;
@@ -465,23 +506,24 @@ header.homework-header.desktop-only {
     justify-content: center;
     align-items: center;
     transform: translate(-50%, -50%) scale(0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
 }
 
 .lesson-card .time-slot {
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 900;
     margin-bottom: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    color: #a69076;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
 }
 
 .lesson-card .lesson-name {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 950;
     margin-bottom: 8px;
-    color: #fff;
-    letter-spacing: -0.5px;
+    color: #121212;
+    letter-spacing: -1px;
 }
 
 .lesson-card .lesson-location {
@@ -494,11 +536,9 @@ header.homework-header.desktop-only {
     width: 500px;
     height: 340px;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow:
-        0 40px 100px rgba(0, 0, 0, 0.8),
-        0 0 80px rgba(255, 255, 255, 0.05);
+    background: #ffffff;
+    border: 1px solid rgba(209, 166, 132, 0.1);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
 }
@@ -555,31 +595,30 @@ header.homework-header.desktop-only {
 }
 
 .lesson-status.active {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: #f1ede6;
+    color: #413225;
+    font-weight: 800;
 }
 
 .lesson-status.upcoming {
-    background: rgba(200, 200, 200, 0.1);
-    color: #ccc;
+    background: #f8f5f0;
+    color: #a69076;
 }
 
 .tomorrow-btn {
     padding: 16px 45px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f1ede6;
+    border: 1px solid rgba(0, 0, 0, 0.03);
     border-radius: 50px;
-    color: #fff;
+    color: #a69076;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: 2px;
     text-transform: uppercase;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     margin-top: 40px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .tomorrow-btn:hover {
@@ -636,10 +675,11 @@ header.homework-header.desktop-only {
 
 .homework-list-container {
     width: 350px;
-    background: rgba(20, 20, 20, 0.4);
-    border-radius: 25px;
-    padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.04);
 }
 
 .hw-subject-badge {
@@ -650,13 +690,15 @@ header.homework-header.desktop-only {
 
 /* Modal Content */
 .modal-content {
-    background: #1a1a1a;
+    background: #ffffff;
     padding: 40px;
     border-radius: 30px;
-    width: 500px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    width: 550px;
+    max-width: 90vw;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
     position: relative;
+    color: #121212;
 }
 
 #detailSubject,
@@ -1444,13 +1486,14 @@ header.homework-header.desktop-only {
     }
 
     .mobile-hw-card {
-        background: rgba(30, 30, 35, 0.6);
+        background: #ffffff;
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-radius: 24px;
         padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.02);
         position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
     }
 
     .hw-card-header {
@@ -1461,13 +1504,13 @@ header.homework-header.desktop-only {
     }
 
     .hw-subject-badge {
-        background: rgba(80, 70, 100, 0.4);
-        border: 1px solid rgba(120, 100, 150, 0.3);
-        color: #ddd;
+        background: #f1ede6;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        color: #a69076;
         padding: 6px 12px;
         border-radius: 8px;
         font-size: 10px;
-        font-weight: 800;
+        font-weight: 850;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
@@ -1482,21 +1525,21 @@ header.homework-header.desktop-only {
 
     .hw-content h3 {
         font-size: 18px;
-        font-weight: 700;
-        color: #fff;
+        font-weight: 850;
+        color: #121212;
         margin-bottom: 5px;
         word-break: break-word;
         overflow-wrap: break-word;
     }
 
     .hw-content p {
-        color: #888;
+        color: #a69076;
         font-size: 13px;
         display: flex;
         align-items: center;
         gap: 8px;
         margin-top: 15px;
-        font-weight: 500;
+        font-weight: 700;
     }
 
     .hw-content p i {
@@ -1689,6 +1732,16 @@ body .modal-content.premium .btn-secondary {
     .homework-layout>div:last-child {
         flex: 1 !important;
     }
+
+    .exams-container,
+    .calendar-container {
+        background: #ffffff !important;
+        border-radius: 40px !important;
+        border: 1px solid rgba(0, 0, 0, 0.03) !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05) !important;
+        padding: 40px !important;
+        color: #1a1a1a !important;
+    }
 }
 
 /* --- ÖBS (Teacher Info) Page Styles --- */
@@ -1699,13 +1752,58 @@ body .modal-content.premium .btn-secondary {
 #obsPage {
     padding-top: 100px;
     min-height: 100vh;
-    background: #0a0a0f;
+    background: #fdfaf5;
 }
 
 .obs-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 40px;
+    padding: 0 40px 100px 40px;
+}
+
+.obs-search-container {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.obs-search-bar {
+    background: #ffffff;
+    border: 1.5px solid rgba(166,144,118,0.15);
+    border-radius: 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.03);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.obs-search-bar:focus-within {
+    border-color: #c49673;
+    box-shadow: 0 20px 50px rgba(196,150,115,0.12);
+    transform: translateY(-2px);
+}
+
+.obs-search-bar i {
+    color: #c49673;
+    width: 22px;
+    height: 22px;
+}
+
+.obs-search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 800;
+    color: #413225;
+    background: transparent;
+}
+
+.obs-search-bar input::placeholder {
+    color: #a69076;
+    opacity: 0.4;
 }
 
 .teacher-grid {
@@ -1715,8 +1813,8 @@ body .modal-content.premium .btn-secondary {
 }
 
 .teacher-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.02);
     border-radius: 24px;
     padding: 30px;
     display: flex;
@@ -1727,6 +1825,7 @@ body .modal-content.premium .btn-secondary {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
 }
 
 .teacher-card:hover {
@@ -1759,16 +1858,16 @@ body .modal-content.premium .btn-secondary {
 
 .teacher-name {
     font-size: 18px;
-    font-weight: 800;
-    color: #fff;
+    font-weight: 850;
+    color: #121212;
     margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.5px;
 }
 
 .teacher-subject {
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    font-weight: 800;
+    color: #a69076;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -1811,12 +1910,12 @@ body .modal-content.premium .btn-secondary {
 .teacher-modal .modal-container {
     position: relative;
     width: 100%;
-    max-width: 600px;
-    background: linear-gradient(135deg, #1a1a20 0%, #0a0a0f 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 650px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 40px;
     padding: 50px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
     z-index: 10;
 }
 
@@ -2043,3 +2142,284 @@ body .modal-content.premium .btn-secondary {
     font-size: 14px;
     font-style: italic;
 }
+
+/* --- SPECIAL BIRTHDAY THEME (APRIL 24) --- */
+body.birthday-theme {
+    --bg-dark: #1a0510 !important;
+    --accent-glow: radial-gradient(circle at 50% 50%, rgba(100, 20, 60, 1) 0%, rgba(40, 5, 20, 1) 100%) !important;
+    --pill-active: #ff1493 !important; /* Deep Pink */
+    --pill-text-active: #ffffff !important;
+}
+
+body.birthday-theme .search-container {
+    background: #ffffff !important;
+    border-color: #ffb6c1 !important;
+    box-shadow: 0 0 35px rgba(255, 105, 180, 0.6), 0 15px 40px rgba(0,0,0,0.15) !important;
+}
+
+body.birthday-theme #mainSearchInput {
+    color: #1a0510 !important;
+}
+
+body.birthday-theme #mainSearchInput::placeholder {
+    color: #a69076 !important;
+}
+
+body.birthday-theme .search-icon-btn i {
+    color: #ff1493 !important;
+}
+
+body.birthday-theme #shortcutsBtn {
+    background: rgba(255, 20, 147, 0.1) !important;
+    border-color: rgba(255, 105, 180, 0.2) !important;
+    color: #ff1493 !important;
+}
+
+
+body.birthday-theme .logo {
+    background: linear-gradient(to bottom, #ff99cc, #ff1493) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+body.birthday-theme nav {
+    border-color: rgba(255, 105, 180, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+    body.birthday-theme .mobile-home-view {
+        background-color: #fff0f5 !important;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(255, 105, 180, 0.2) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(255, 20, 147, 0.15) 0px, transparent 50%) !important;
+    }
+
+    body.birthday-theme #mobileHeroSubject {
+        color: #ff1493 !important;
+        text-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+    }
+
+    body.birthday-theme .day-circle.active {
+        background: #ff1493 !important;
+        box-shadow: 0 8px 20px rgba(255, 20, 147, 0.3) !important;
+    }
+
+    body.birthday-theme .progress-fill {
+        background: #ff1493 !important;
+    }
+
+    body.birthday-theme .timeline-item.active,
+    body.birthday-theme .modern-timeline-card.active {
+        border-color: #ff69b4 !important;
+        background: rgba(255, 192, 203, 0.1) !important;
+        box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15) !important;
+    }
+
+    body.birthday-theme .section-label,
+    body.birthday-theme .summary-label {
+        color: #ff69b4 !important;
+    }
+
+    body.birthday-theme .see-all-btn,
+    body.birthday-theme .mobile-icon-back-btn,
+    body.birthday-theme .mobile-schedule-tabs {
+        background: #ffe4e1 !important; /* Misty Rose */
+        color: #ff1493 !important;
+    }
+
+    body.birthday-theme .mobile-tab-btn.active {
+        background: #ff1493 !important;
+        color: #fff !important;
+    }
+
+    body.birthday-theme .mobile-nav-item.active {
+        color: #ff1493 !important;
+    }
+}
+
+/* --- Birthday Banner Styles --- */
+.birthday-banner, .birthday-banner-mobile {
+    display: none;
+}
+
+body.birthday-theme .birthday-banner {
+    display: block;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 950;
+    color: #ff1493;
+    margin-bottom: 30px;
+    text-shadow: 0 0 25px rgba(255, 20, 147, 0.5);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -1px;
+}
+
+
+body.birthday-theme .birthday-banner-mobile {
+    display: block;
+    text-align: center;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 950;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    border-radius: 0 0 25px 25px;
+    margin-bottom: 5px;
+    box-shadow: 0 10px 20px rgba(255, 20, 147, 0.2);
+    letter-spacing: -0.5px;
+}
+
+/* --- FINAL DESKTOP THEME ALIGNMENT --- */
+@media (min-width: 769px) {
+    .premium-modal-content, 
+    .reminders-modal .modal-container,
+    .hw-modal-content,
+    .modal-content.premium {
+        background: #ffffff !important;
+        color: #1a1a1a !important;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.1) !important;
+    }
+
+    .premium-input, 
+    .hw-input,
+    .admin-input,
+    .admin-textarea {
+        background: #f8f5f0 !important;
+        color: #1a1a1a !important;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+    }
+
+    .premium-input::placeholder,
+    .hw-input::placeholder {
+        color: #a69076 !important;
+        opacity: 0.5;
+    }
+
+    .modal-btn-confirm,
+    .admin-submit-btn,
+    .hw-submit-btn {
+        background: #413225 !important;
+        color: #ffffff !important;
+        box-shadow: 0 10px 25px rgba(65, 50, 37, 0.2) !important;
+    }
+
+    .modal-btn-cancel {
+        background: #f1ede6 !important;
+        color: #a69076 !important;
+    }
+}
+
+.hero-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 50px;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-stats-row.has-lesson {
+    gap: 80px;
+}
+
+#dynamicLessonWidget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.hero-stats-row.has-lesson #dynamicLessonWidget {
+    width: auto;
+    min-width: 320px;
+    max-width: 600px;
+    opacity: 1;
+}
+
+.lesson-live-badge {
+    background: #fff;
+    border: 1px solid rgba(196, 150, 115, 0.15);
+    padding: 12px 28px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 950;
+    color: #413225;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 10px 30px rgba(196, 150, 115, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lesson-live-badge .indicator {
+    width: 8px;
+    height: 8px;
+    background: #c49673;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #c49673;
+    animation: pulseGlow 2s infinite;
+}
+
+.lesson-quick-links {
+    display: flex;
+    gap: 12px;
+}
+
+.lesson-link-btn {
+    background: #ffffff;
+    border: 1.5px solid rgba(166,144,118,0.12);
+    padding: 10px 18px;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #a69076;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.lesson-link-btn:hover {
+    background: #c49673;
+    color: #fff;
+    border-color: #c49673;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(196, 150, 115, 0.25);
+}
+
+.lesson-link-btn:hover i {
+    transform: scale(1.1);
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(196, 150, 115, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(196, 150, 115, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(196, 150, 115, 0); }
+}
+
+@media (max-width: 768px) {
+    .hero-stats-row {
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    .lesson-dynamic-container {
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+

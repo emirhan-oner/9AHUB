@@ -167,15 +167,7 @@ function showPage(pageName) {
         }
     });
 
-    // Handle Mobile Back Button visibility
-    const backBtn = document.getElementById('mobileBackBtn');
-    if (backBtn) {
-        if (pageName === 'home') {
-            backBtn.classList.remove('show');
-        } else {
-            backBtn.classList.add('show');
-        }
-    }
+
     if (window.lucide) lucide.createIcons();
 
 
@@ -446,7 +438,32 @@ window.addEventListener('load', () => {
         currentMobileTimelineDay = (todayName === 'Pazar' || todayName === 'Cumartesi') ? 'Pazartesi' : todayName;
         updateMobileTimeline(currentMobileTimelineDay);
     }
+
+    // Auto-activate Pink Theme on April 24th
+    checkBirthdayTheme();
 });
+
+/**
+ * Special Theme for April 24 Birthday
+ * Sets a celebratory pink aesthetic across the app
+ */
+function checkBirthdayTheme() {
+    const now = new Date();
+    const month = now.getMonth(); // 0 is Jan, 3 is April
+    const day = now.getDate();
+    
+    // Logic: Activate on April 24th
+    const isApril24 = (month === 3 && day === 24);
+    
+    // TEMPORARY: Forced to TRUE for preview purposes (as requested)
+    const previewMode = false; 
+    
+    if (isApril24 || previewMode) {
+        document.body.classList.add('birthday-theme');
+        console.log("🎂 Birthday Theme Active!");
+    }
+}
+
 
 // --- Class Reminders App Logic ---
 let remindersData = JSON.parse(localStorage.getItem('classReminders')) || [];

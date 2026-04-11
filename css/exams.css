@@ -1,9 +1,9 @@
 /* --- Exams Page - Absolute Hub Replication (Clean) --- */
 
 #examsPage {
-    background-color: #050505 !important;
+    background-color: transparent !important;
     font-family: 'Inter', sans-serif !important;
-    color: #FFFFFF !important;
+    color: #1a1a1a !important;
     position: relative;
     overflow-x: hidden;
     min-height: 100vh;
@@ -47,7 +47,7 @@
     z-index: 100;
     padding: 1.5rem 0 0.75rem 0;
     /* Hub standardı */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .exams-header-container {
@@ -79,18 +79,19 @@
     display: flex;
     align-items: center;
     gap: 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 1rem;
     padding: 0 1.5rem;
     flex: 1;
     width: auto;
     height: 44px;
     transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
 }
 
 .exams-search-area i {
-    color: rgba(255, 255, 255, 0.1);
+    color: #a69076;
     width: 18px;
     height: 18px;
 }
@@ -100,7 +101,7 @@
     border: none !important;
     outline: none !important;
     width: 100%;
-    color: #FFFFFF;
+    color: #1a1a1a;
     font-size: 11px;
     font-weight: 900;
     text-transform: uppercase;
@@ -123,7 +124,8 @@
 }
 
 .exams-search-input::placeholder {
-    color: rgba(255, 255, 255, 0.15);
+    color: #a69076;
+    opacity: 0.5;
     text-transform: uppercase;
     letter-spacing: 0.15em;
 }
@@ -137,8 +139,8 @@
 
 .status-left {
     font-size: 10px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.2);
+    font-weight: 950;
+    color: #a69076;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     white-space: nowrap;
@@ -208,314 +210,26 @@
     }
 }
 
+
 /* Exam Card */
-.exam-card {
-    background: #0B0F1A;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 40px;
-    padding: 2.5rem;
-    min-height: 240px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.exam-card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(255, 255, 255, 0.1);
-    background: #111726;
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
-}
-
-.exam-card-badge {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    background: #FFFFFF;
-    color: #000000;
-    font-size: 10px;
-    font-weight: 900;
-    padding: 0.65rem 1.15rem;
-    border-radius: 0.85rem;
-    text-transform: uppercase;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.exam-card-subject {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #FFFFFF;
-    margin: 0 0 0.5rem 0;
-    text-transform: uppercase;
-}
-
-.exam-card-category {
-    font-size: 10px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 2rem;
-}
-
-.hub-btn-preview {
-    font-size: 11px;
-    font-weight: 900;
-    color: #3b82f6;
-    background: transparent;
-    border: none;
-    text-transform: uppercase;
-    cursor: pointer;
-    padding: 0;
-}
-
-.exam-uploader-avatar {
-    position: absolute;
-    bottom: 2rem;
-    right: 2rem;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.02);
-}
-
-/* Date Headers */
-.hub-section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 4rem 0 2rem 0;
-}
-
-.hub-section-title {
-    font-size: 1rem;
-    font-weight: 900;
-    color: #ff6b2b;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    font-style: italic;
-    text-shadow: 0 0 12px rgba(255, 107, 43, 0.4);
-}
-
-/* Modals */
-/* modal-overlay cleaned up */
-
-
-.modal-overlay.active {
-    display: flex;
-}
-
-.exams-filter-container {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 0.75rem;
-    padding: 4px;
-    display: flex;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.hub-filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: none;
-    letter-spacing: normal;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(255, 255, 255, 0.02);
-    color: rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.hub-filter-btn:hover {
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-.hub-filter-btn i {
-    width: 14px;
-    height: 14px;
-    opacity: 0.6;
-}
-
-.hub-filter-btn.active {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-}
-
-.hub-filter-btn.active i {
-    opacity: 1;
-}
-
-
-/* hub-modal cleaned up */
-
-
-/* Admin Tabs */
-.admin-tab {
-    flex: 1;
-    padding: 1rem;
-    border-radius: 1rem;
-    font-size: 10px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.3);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-.admin-tab.active {
-    background: #FFFFFF;
-    color: #000000;
-}
-
-.admin-input,
-.admin-textarea {
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 1rem;
-    padding: 1.25rem;
-    color: #fff;
-    width: 100%;
-    font-size: 14px;
-    outline: none;
-}
-
-.admin-submit-btn {
-    width: 100%;
-    background: #2563eb;
-    color: #fff;
-    font-weight: 900;
-    padding: 1.25rem;
-    border-radius: 1.25rem;
-    border: none;
-    text-transform: uppercase;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
-}
-
-/* Utils */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.animate-fade {
-    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Day Grouping Layout */
-.exam-day-group {
-    grid-column: 1 / -1;
-    width: 100%;
-    margin-bottom: 0.5rem;
-    animation: fadeScale 0.5s ease backwards;
-}
-
-.exam-day-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: flex-start;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-
-.exam-day-row .exam-card-new {
-    flex: 0 0 260px;
-    width: 260px;
-    min-width: 240px;
-}
-
-@media (max-width: 768px) {
-    .exam-day-row .exam-card-new {
-        flex: 1 1 100%;
-        width: 100%;
-        min-width: unset;
-    }
-
-    .exam-day-group {
-        margin-bottom: 2rem;
-    }
-}
-
-/* New Premium Exam Card Design */
 .exam-card-new {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 28px;
-    padding: 1.75rem;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    border-radius: 32px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
-    min-height: 200px;
+    min-height: 180px;
     position: relative;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow:
-        0 15px 35px -10px rgba(0, 0, 0, 0.3),
-        inset 0 0 20px rgba(255, 255, 255, 0.02);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .exam-card-new:hover {
-    transform: translateY(-8px) scale(1.02);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 30px 60px -12px rgba(0, 0, 0, 0.6),
-        inset 0 0 30px rgba(255, 255, 255, 0.05);
-}
-
-/* Card Rim/Reflection Effect */
-.exam-card-new::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.05),
-            transparent);
-    transition: 0.6s;
-}
-
-.exam-card-new:hover::after {
-    left: 100%;
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(166, 144, 118, 0.1);
+    border-color: rgba(196, 150, 115, 0.1);
 }
 
 .exam-card-header {
@@ -525,28 +239,25 @@
     margin-bottom: 1.5rem;
 }
 
-/* Category removed as per request */
-
-
 .exam-lesson-badge {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #fdfaf5;
+    border: 1px solid rgba(166, 144, 118, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 12px;
     font-size: 11px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.6);
+    font-weight: 850;
+    color: #a69076;
     text-transform: uppercase;
 }
 
 .exam-subject-title {
-    font-size: 19px;
-    font-weight: 900;
-    color: #FFFFFF;
-    margin: 0 0 1rem 0;
-    font-style: italic;
-    line-height: 1.1;
+    font-size: 20px;
+    font-weight: 950;
+    color: #1a1a1a;
+    margin: 0 0 1.25rem 0;
+    line-height: 1.2;
     text-transform: uppercase;
+    letter-spacing: -0.5px;
 }
 
 .exam-details-grid {
@@ -565,20 +276,21 @@
 .detail-label {
     font-size: 10px;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.2);
-    letter-spacing: 0.1em;
+    color: #a69076;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
+    opacity: 0.6;
 }
 
 .detail-value {
     font-size: 14px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.8);
+    font-weight: 950;
+    color: #1a1a1a;
 }
 
 .separator-line {
     height: 1px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.05);
     width: 100%;
     margin-bottom: 1.5rem;
 }
@@ -590,221 +302,84 @@
     margin-top: auto;
 }
 
-.btn-detail-view {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.hub-section-title {
+    font-size: 1rem;
+    font-weight: 950;
+    color: #c49673;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.02em;
+    font-style: italic;
+    border-left: 4px solid #c49673;
+    padding-left: 12px;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.hub-modal {
+    background: #ffffff;
+    border-radius: 40px;
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+}
+
+/* Day Grouping */
+.exam-day-group {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.exam-day-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
+.btn-detail-view {
+    background: #fdfaf5;
+    border: 1px solid rgba(166, 144, 118, 0.1);
+    padding: 8px 16px;
+    border-radius: 12px;
+    color: #a69076;
+    font-size: 11px;
+    font-weight: 850;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
 }
 
 .btn-detail-view:hover {
-    background: #fff;
-    color: #000;
+    background: #c49673;
+    color: #fff;
 }
 
-.btn-admin-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.btn-admin-icon.edit {
-    color: #eab308;
-    background: rgba(234, 179, 8, 0.08);
-    border: 1px solid rgba(234, 179, 8, 0.1);
-}
-
-.btn-admin-icon.delete {
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.1);
-}
-
-.footer-admin-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.note-badge {
-    padding: 3px 6px;
-    border-radius: 5px;
-    font-size: 8px;
-    font-weight: 700;
-    background: rgba(234, 179, 8, 0.15);
-    color: #eab308;
-}
-
-/* Note Stats & UI */
 .exam-note-stats {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 9px;
-    font-weight: 800;
-    color: #3b82f6;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    background: rgba(59, 130, 246, 0.1);
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid rgba(59, 130, 246, 0.1);
-}
-
-.exam-note-stats.empty {
-    color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.02);
-}
-
-.exam-note-stats i {
-    width: 12px;
-    height: 12px;
-}
-
-.btn-add-note {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    color: #4ade80;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-add-note:hover {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: rgba(34, 197, 94, 0.4);
-    transform: scale(1.1);
-}
-
-.btn-detail-view {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 8px 14px;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 850;
+    color: #c49673;
+    background: rgba(196, 150, 115, 0.1);
+    padding: 6px 10px;
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-}
-
-.btn-detail-view:hover {
-    background: #fff;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow:
-        0 15px 35px -10px rgba(0, 0, 0, 0.3),
-        inset 0 0 20px rgba(255, 255, 255, 0.02);
-}
-
-.exam-card-new:hover {
-    transform: translateY(-8px) scale(1.02);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
-    border-color: rgba(255, 255, 255, 0.25);
-    box-shadow:
-        0 30px 60px -12px rgba(0, 0, 0, 0.6),
-        inset 0 0 30px rgba(255, 255, 255, 0.05);
-}
-
-/* Card Rim/Reflection Effect */
-.exam-card-new::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.05),
-            transparent);
-    transition: 0.6s;
-}
-
-.exam-card-new:hover::after {
-    left: 100%;
-}
-
-.exam-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-/* Category removed as per request */
-
-
-.exam-lesson-badge {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.6);
-    text-transform: uppercase;
-}
-
-.exam-subject-title {
-    font-size: 19px;
-    font-weight: 900;
-    color: #FFFFFF;
-    margin: 0 0 1rem 0;
-    font-style: italic;
-    line-height: 1.1;
-    text-transform: uppercase;
-}
-
-.exam-details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.detail-label {
-    font-size: 10px;
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.2);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.detail-value {
-    font-size: 14px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.8);
 }
 
 .separator-line {

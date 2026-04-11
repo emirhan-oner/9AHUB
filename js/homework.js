@@ -31,14 +31,16 @@ function sortHomework(sortBy) {
     const sortGivenBtn = document.getElementById('sortGivenBtn');
 
     if (sortDueBtn) {
-        sortDueBtn.style.background = sortBy === 'dueDate' ? 'rgba(255,255,255,0.1)' : 'transparent';
-        sortDueBtn.style.color = sortBy === 'dueDate' ? '#fff' : '#888';
-        sortDueBtn.style.border = sortBy === 'dueDate' ? 'none' : '1px solid #333';
+        sortDueBtn.style.background = sortBy === 'dueDate' ? '#c49673' : '#f1ede6';
+        sortDueBtn.style.color = sortBy === 'dueDate' ? '#fff' : '#a69076';
+        sortDueBtn.style.border = 'none';
+        sortDueBtn.style.boxShadow = sortBy === 'dueDate' ? '0 8px 15px rgba(196, 150, 115, 0.2)' : 'none';
     }
     if (sortGivenBtn) {
-        sortGivenBtn.style.background = sortBy === 'givenDate' ? 'rgba(255,255,255,0.1)' : 'transparent';
-        sortGivenBtn.style.color = sortBy === 'givenDate' ? '#fff' : '#888';
-        sortGivenBtn.style.border = sortBy === 'givenDate' ? 'none' : '1px solid #333';
+        sortGivenBtn.style.background = sortBy === 'givenDate' ? '#c49673' : '#f1ede6';
+        sortGivenBtn.style.color = sortBy === 'givenDate' ? '#fff' : '#a69076';
+        sortGivenBtn.style.border = 'none';
+        sortGivenBtn.style.boxShadow = sortBy === 'givenDate' ? '0 8px 15px rgba(196, 150, 115, 0.2)' : 'none';
     }
     renderHomeworkCards();
 }
@@ -63,29 +65,29 @@ function renderHomeworkCards() {
     sorted.forEach((hw, index) => {
         const card = document.createElement('div');
         card.style.cssText = `
-            background: linear-gradient(135deg, rgba(50, 50, 50, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+            background: #ffffff;
             backdrop-filter: blur(10px);
             padding: 22px;
             border-radius: 18px;
             margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
             animation: slideUp 0.4s ease ${index * 0.05}s backwards;
         `;
 
         card.onmouseover = () => {
-            card.style.background = 'linear-gradient(135deg, rgba(60, 60, 60, 0.7) 0%, rgba(50, 50, 50, 0.7) 100%)';
+            card.style.background = '#fdfaf5';
             card.style.transform = 'translateY(-4px)';
-            card.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
-            card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            card.style.boxShadow = '0 15px 45px rgba(0, 0, 0, 0.06)';
+            card.style.borderColor = 'rgba(166, 144, 118, 0.2)';
         };
         card.onmouseout = () => {
-            card.style.background = 'linear-gradient(135deg, rgba(50, 50, 50, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%)';
+            card.style.background = '#ffffff';
             card.style.transform = 'translateY(0)';
-            card.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-            card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.03)';
+            card.style.borderColor = 'rgba(0, 0, 0, 0.05)';
         };
         card.onclick = () => openHomeworkDetail(hw);
 
@@ -95,13 +97,14 @@ function renderHomeworkCards() {
             font-size: 12px;
             font-weight: 700;
             color: #fff;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+            background: rgba(196, 150, 115, 0.1);
+            color: #c49673;
             display: inline-block;
             padding: 5px 14px;
             border-radius: 8px;
             margin-bottom: 12px;
             letter-spacing: 0.5px;
-            border: 1px solid rgba(102, 126, 234, 0.4);
+            border: 1px solid rgba(196, 150, 115, 0.2);
             word-break: break-all;
             max-width: 100%;
         `;
@@ -110,7 +113,7 @@ function renderHomeworkCards() {
         desc.textContent = hw.description;
         desc.style.cssText = `
             font-size: 14px;
-            color: #ddd;
+            color: #413225;
             margin-bottom: 14px;
             line-height: 1.5;
             font-weight: 500;
@@ -313,17 +316,17 @@ window.renderMobileActiveHomeworks = function () {
         btn.style.cssText = `
             width: 100%;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 16px;
-            color: #fff;
+            color: #1a1a1a;
             margin-bottom: 20px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         `;
         btn.onclick = () => {
             const tomorrowHw = sorted.filter(hw => hw.dueDate === tomorrowStr);
@@ -484,17 +487,17 @@ function createCalendarCell(dateOrDay, isOtherMonth) {
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s;
-        color: ${isOtherMonth ? '#444' : '#fff'};
-        background: ${isOtherMonth ? 'transparent' : 'rgba(255,255,255,0.04)'};
+        color: ${isOtherMonth ? '#ccc' : '#1a1a1a'};
+        background: ${isOtherMonth ? 'transparent' : '#fdfaf5'};
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 700;
         position: relative;
         min-height: 90px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.08);
     `;
 
     const dayNumber = document.createElement('div');
@@ -504,9 +507,9 @@ function createCalendarCell(dateOrDay, isOtherMonth) {
 
     if (!isOtherMonth) {
         if (isToday) {
-            cell.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%)';
-            cell.style.border = '2px solid rgba(102, 126, 234, 0.6)';
-            dayNumber.style.color = '#fff';
+            cell.style.background = 'rgba(196, 150, 115, 0.1)';
+            cell.style.border = '2px solid #c49673';
+            dayNumber.style.color = '#c49673';
         }
 
         const homeworkOnDate = window.homeworkList.filter(hw => hw.dueDate === cellDateStr);
@@ -523,13 +526,13 @@ function createCalendarCell(dateOrDay, isOtherMonth) {
             homeworkOnDate.slice(0, 3).forEach(hw => {
                 const hwItem = document.createElement('div');
                 hwItem.style.cssText = `
-                    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+                    background: rgba(196, 150, 115, 0.1);
                     padding: 4px 6px;
                     border-radius: 6px;
                     font-size: 10px;
-                    font-weight: 600;
-                    color: #fff;
-                    border: 1px solid rgba(102, 126, 234, 0.4);
+                    font-weight: 700;
+                    color: #c49673;
+                    border: 1px solid rgba(196, 150, 115, 0.2);
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -591,14 +594,14 @@ function createCalendarCell(dateOrDay, isOtherMonth) {
 
         cell.onmouseover = () => {
             if (!isToday) {
-                cell.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 100%)';
+                cell.style.background = '#f1ede6';
                 cell.style.transform = 'scale(1.02)';
-                cell.style.boxShadow = '0 4px 12px rgba(255, 255, 255, 0.1)';
+                cell.style.boxShadow = '0 4px 12px rgba(166, 144, 118, 0.08)';
             }
         };
         cell.onmouseout = () => {
             if (!isToday) {
-                cell.style.background = 'rgba(255,255,255,0.04)';
+                cell.style.background = '#fdfaf5';
                 cell.style.transform = 'scale(1)';
                 cell.style.boxShadow = 'none';
             }
@@ -682,14 +685,14 @@ function showTodayHomework() {
             subject.style.cssText = `
                 font-size: 13px;
                 font-weight: 700;
-                color: #fff;
-                background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+                color: #c49673;
+                background: rgba(196, 150, 115, 0.1);
                 display: inline-block;
                 padding: 6px 14px;
                 border-radius: 8px;
                 margin-bottom: 12px;
                 letter-spacing: 0.5px;
-                border: 1px solid rgba(102, 126, 234, 0.4);
+                border: 1px solid rgba(196, 150, 115, 0.2);
             `;
 
             const desc = document.createElement('div');
@@ -1013,14 +1016,16 @@ function setupViewToggles() {
             document.querySelectorAll('.view-toggle').forEach(b => {
                 if (b.dataset.view === view) {
                     b.classList.add('active');
-                    b.style.background = '#222';
+                    b.style.background = '#c49673';
                     b.style.color = '#fff';
                     b.style.border = 'none';
+                    b.style.boxShadow = '0 8px 15px rgba(196, 150, 115, 0.2)';
                 } else {
                     b.classList.remove('active');
-                    b.style.background = 'transparent';
-                    b.style.color = '#888';
-                    b.style.border = '1px solid #333';
+                    b.style.background = '#f1ede6';
+                    b.style.color = '#a69076';
+                    b.style.border = 'none';
+                    b.style.boxShadow = 'none';
                 }
             });
 
