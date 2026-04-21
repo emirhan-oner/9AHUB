@@ -810,6 +810,15 @@ async function handleNoteUpload(event) {
         const files = Array.from(fileInput.files);
         const batchId = crypto.randomUUID();
 
+        // 30MB Warning & Redirect
+        const tooLarge = files.find(f => f.size > 30 * 1024 * 1024);
+        if (tooLarge) {
+            alert(`"${tooLarge.name}" dosyası 30MB'dan büyük! Sistem sağlığı için bu dosyayı küçültmeniz gerekiyor. İlgili siteye yönlendiriliyorsunuz...`);
+            window.open('https://www.ilovepdf.com/tr/pdf-kucultme', '_blank');
+            submitBtn.disabled = false;
+            return;
+        }
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
 

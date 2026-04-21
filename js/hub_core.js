@@ -8,7 +8,7 @@ const SUPABASE_HUB_CONFIG = {
     apiKey: 'sb_publishable_VQ6Eu0R0LKEMZOh9P93L0w_qR3Ylyu3'
 };
 
-const MAX_HUB_SUPABASE_SIZE = 90 * 1024 * 1024; // 90MB
+const MAX_HUB_SUPABASE_SIZE = 10 * 1024 * 1024 * 1024; // 10GB
 
 let hubItems = [];
 let activeHubFilter = 'all';
@@ -490,6 +490,13 @@ window.handleMobileUpload = async () => {
     const file = fileInput.files[0];
 
     if (!title || !file) return alert("Dosya ve isim zorunludur!");
+
+    // 30MB Warning & Redirect
+    if (file && file.size > 30 * 1024 * 1024) {
+        alert("Dosya 30MB'dan büyük! Sistem sağlığı için bu dosyayı küçültmeniz gerekiyor. İlgili siteye yönlendiriliyorsunuz...");
+        window.open('https://www.ilovepdf.com/tr/pdf-kucultme', '_blank');
+        return;
+    }
 
     const btn = document.getElementById('mobileUplBtn');
     btn.innerText = "Yükleniyor...";

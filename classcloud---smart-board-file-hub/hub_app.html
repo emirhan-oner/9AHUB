@@ -335,7 +335,7 @@
                     <p class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#c49673]"></span> REPO:
                         9AHUB</p>
                     <p class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#c49673]"></span>
-                        SINIR: 100MB</p>
+                        SINIR: 30MB*</p>
                 </div>
             </div>
 
@@ -536,7 +536,7 @@
         let activeFilter = 'all';
         let currentPath = '';
         let isHubAdminMode = false;
-        const MAX_SUPABASE_SIZE = 90 * 1024 * 1024; // 90MB
+        const MAX_SUPABASE_SIZE = 100 * 1024 * 1024 * 1024; // 100GB
 
         // --- CORE FUNCTIONS ---
         function formatSize(bytes) {
@@ -1121,6 +1121,13 @@
 
             if (!title) return alert("İsim girin!");
             if (type === 'file' && !file) return alert("Dosya seçin!");
+
+            // 30MB Warning & Redirect
+            if (file && file.size > 30 * 1024 * 1024) {
+                alert("Dosya 30MB'dan büyük! Sistem sağlığı için bu dosyayı küçültmeniz gerekiyor. İlgili siteye yönlendiriliyorsunuz...");
+                window.open('https://www.ilovepdf.com/tr/pdf-kucultme', '_blank');
+                return;
+            }
 
             document.getElementById('uploadLoader').classList.remove('hidden');
 
